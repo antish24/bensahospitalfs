@@ -1,95 +1,143 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+import { Button, Form, Input, Select } from 'antd'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
+import styles from './page.module.css'
+import Link from 'next/link'
+import axios from 'axios'
 
-export default function Home() {
+const Landing = () => {
+
+  const navigate=useRouter()
+  const [loading,setLoading]=useState(false)
+  const onFinish =async (values) => {
+    setLoading(true)
+    try {
+      const res=await axios.post(`/api/auth/login`,{email:values.email,password:values.password,role:values.role})
+      setLoading(false)
+      localStorage.setItem('HFS_Token',res.data.token)
+      navigate.push(values.role)
+    } catch (error) {
+      alert( error.response.data.message);
+      setLoading(false)
+    }
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div className={styles.box}>
+      <div className={styles.loginform}>
+        <h2>Wellcome Staff</h2>
+        <Form
+        layout="vertical"
+    name="login"
+    style={{
+      width: '70%',
+    }}
+    onFinish={onFinish}
+    onFinishFailed={onFinishFailed}
+    autoComplete="on"
+    autoFocus='true'
+  >
+    <Form.Item
+      label="Email"
+      name="email"
+      style={{margin:'5px 0'}}
+      rules={[
+        {
+          required: true,
+          type:'email',
+          message: 'Please input your Email!',
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item
+      label="Password"
+      style={{margin:'5px 0'}}
+      name="password"
+      rules={[
+        {
+          required: true,
+          message: 'Please input your password!',
+        },
+      ]}
+    >
+      <Input.Password />
+    </Form.Item>
+    <Form.Item 
+    label="Role"
+      style={{margin:'5px 0'}}
+      name="role"
+    rules={[
+      {
+        required: true,
+        message: 'Please selecte role',
+      },
+    ]}>
+    <Select
+    showSearch
+    placeholder="Search to Select"
+    optionFilterProp="children"
+    filterOption={(input, option) => (option?.label ?? '').includes(input)}
+    filterSort={(optionA, optionB) =>
+      (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+    }
+    options={[
+      {
+        value: 'bedmanger',
+        label: 'Bed Manager',
+      },
+      {
+        value: 'cashier',
+        label: 'Cashier',
+      },
+      {
+        value: 'pharmacy',
+        label: 'Pharmacy',
+      },
+      {
+        value: 'physicians',
+        label: 'Physicians',
+      },
+      {
+        value: 'triage',
+        label: 'Triage',
+      },
+      {
+        value: 'diagnosticservices',
+        label: 'Diagnostic Services',
+      },
+      {
+        value: 'systemadmin',
+        label: 'System Admin',
+      },
+      {
+        value: 'ceomanagement',
+        label: 'CEO Manager',
+      },
+      {
+        value: 'patient',
+        label: 'Patient',
+      },
+    ]}
+  />
+    </Form.Item>
+    <Link style={{display:'flex',flexDirection:'column',alignItems:'flex-end'}} href="/forgotpassword">Forgot Password?</Link>
+    <Form.Item
+    style={{display:'flex',justifyContent:'center',margin:'5px 0'}}
+    >
+      <Button type="primary" htmlType="submit" disabled={loading} loading={loading}>
+        Login
+      </Button>
+    </Form.Item>
+  </Form>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    </div>
+  )
 }
+
+export default Landing
