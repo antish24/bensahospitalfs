@@ -31,6 +31,7 @@ export const POST = async (request) => {
 
     return new NextResponse(JSON.stringify({token}), { status: 200 });
   } catch (err) {
+    console.log(err)
     return new NextResponse(JSON.stringify({ message: "Database Error" }), { status: 500 });
   }
 };
