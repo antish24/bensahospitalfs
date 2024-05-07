@@ -7,11 +7,10 @@
   align-items: center;
 }
 .loginform{
-  width: 400px;
-  box-shadow: 0 0 1px rgb(36, 36, 36);
-  height: 400px;
+  width: 500px;
+  height: 90vh;
   margin-left: 100px;
-  border-radius: 10px;
+  border-radius: 10px 200px 10px  200px ;
   display: flex;
   flex-direction: column;
   background: white;

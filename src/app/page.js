@@ -1,13 +1,14 @@
 'use client'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, Form, Input, Select, Tooltip } from 'antd'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styles from './page.module.css'
 import Link from 'next/link'
 import axios from 'axios'
+import { AlertContext } from '@/context/AlertContext'
 
 const Landing = () => {
-
+  const {openNotification}=useContext(AlertContext)
   const navigate=useRouter()
   const [loading,setLoading]=useState(false)
   const onFinish =async (values) => {
@@ -18,7 +19,7 @@ const Landing = () => {
       localStorage.setItem('HFS_Token',res.data.token)
       navigate.push(values.role)
     } catch (error) {
-      alert( error.response.data.message);
+      openNotification('error',error.response.data.message,3,'red');
       setLoading(false)
     }
   };
@@ -28,7 +29,10 @@ const Landing = () => {
   return (
     <div className={styles.box}>
       <div className={styles.loginform}>
-        <h2>Wellcome Staff</h2>
+      <Tooltip placement="top" title={'Bensa Hospital Patient File Management System'}>
+      <h2 style={{marginBottom:'50px'}}>Welcome to BHPFMS</h2>
+          </Tooltip>
+        <span style={{width:'70%',marginBottom:'10px'}}>login to your account</span>
         <Form
         layout="vertical"
     name="login"
@@ -131,7 +135,7 @@ const Landing = () => {
     style={{display:'flex',justifyContent:'center',margin:'5px 0'}}
     >
       <Button type="primary" htmlType="submit" disabled={loading} loading={loading}>
-        Login
+        Submit
       </Button>
     </Form.Item>
   </Form>
