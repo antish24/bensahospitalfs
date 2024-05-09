@@ -7,7 +7,7 @@ const PageNotFound = () => {
     const navigate=useRouter()
   return (
     <div>PageNotFound
-        <Button onClick={()=>navigate.push('/')}>Go To Home Page</Button>
+        <Button onClick={()=>navigate.replace('/')}>Go To Home Page</Button>
     </div>
   )
 }
