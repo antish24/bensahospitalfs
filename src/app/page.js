@@ -28,6 +28,7 @@ const Landing = () => {
   };
   return (
     <div className={styles.box}>
+      <div className={styles.loginform2}></div>
       <div className={styles.loginform}>
       <Tooltip placement="top" title={'Bensa Hospital Patient File Management System'}>
       <h2 style={{marginBottom:'50px'}}>Welcome to BHPFMS</h2>
@@ -140,7 +141,6 @@ const Landing = () => {
     </Form.Item>
   </Form>
       </div>
-      <div className={styles.loginform}></div>
     </div>
   )
 }
