@@ -1,15 +1,16 @@
 .box {
   background-image: url('../../public/imgs/login.jpg');
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 100px);
   background-size: cover;
   display: flex;
-  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-left: 100px;
 }
 .loginform{
   width: 500px;
   height: 90vh;
-  margin-left: 100px;
   border-radius: 10px 200px 10px  200px ;
   display: flex;
   flex-direction: column;

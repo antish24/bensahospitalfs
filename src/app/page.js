@@ -17,7 +17,7 @@ const Landing = () => {
       const res=await axios.post(`/api/auth/login`,{email:values.email,password:values.password,role:values.role})
       setLoading(false)
       localStorage.setItem('HFS_Token',res.data.token)
-      navigate.prefetch(values.role)
+      navigate.push(values.role)
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');
       setLoading(false)
@@ -140,6 +140,7 @@ const Landing = () => {
     </Form.Item>
   </Form>
       </div>
+      <div className={styles.loginform}></div>
     </div>
   )
 }
