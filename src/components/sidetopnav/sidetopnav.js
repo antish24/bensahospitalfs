@@ -5,7 +5,7 @@ import logo from '../../../public/imgs/logo.jpg'
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {IoNotifications, IoNotificationsCircle, IoSettingsOutline} from 'react-icons/io5'
+import { IoNotificationsCircle, IoSettingsOutline} from 'react-icons/io5'
 import ModalForm from '../modal/Modal';
 
 const SideTopNav = ({content,links,footer}) => {
@@ -81,10 +81,10 @@ const SideTopNav = ({content,links,footer}) => {
             display:'flex',
             alignItems:'center',
             justifyContent:'flex-end'
-            ,gap:'20px'
+            ,gap:'10px'
           }}
         >
-      <IoNotifications size={20} cursor={'pointer'}/>
+      <IoNotificationsCircle size={24} cursor={'pointer'}/>
           <Dropdown
         menu={{
           items,
