@@ -1,8 +1,11 @@
+import AssignedAppointmentTable from '@/components/tables/AssignendAppointmentTable'
 import React from 'react'
 
 const Appointment = () => {
   return (
-    <div>Physician Appointment</div>
+    <div>
+      <AssignedAppointmentTable/>
+    </div>
   )
 }
 

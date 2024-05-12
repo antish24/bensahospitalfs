@@ -5,7 +5,7 @@ import logo from '../../../public/imgs/logo.jpg'
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {IoSettingsOutline} from 'react-icons/io5'
+import {IoNotifications, IoNotificationsCircle, IoSettingsOutline} from 'react-icons/io5'
 import ModalForm from '../modal/Modal';
 
 const SideTopNav = ({content,links,footer}) => {
@@ -20,19 +20,19 @@ const SideTopNav = ({content,links,footer}) => {
     {
       key: '1',
       label: (
-        <Button onClick={()=>setOpenValue(true)}>Profile</Button>
+        <span onClick={()=>setOpenValue(true)}>Profile</span>
       ),
     },
     {
       key: '2',
       label: (
-        <Link href={'/'}>Change Password</Link>
+        <span>Change Password</span>
       ),
     },
     {
       key: '3',
       label: (
-        <Link href={'/'}>logout</Link>
+        <Link href={'/'} onClick={()=>{localStorage.setItem('BHPFMS_Token','');localStorage.setItem('BHPFMS_Role','')}}>logout</Link>
       ),
     },
   ];
@@ -54,7 +54,7 @@ const SideTopNav = ({content,links,footer}) => {
   }
   return (
     <Layout style={{height:'100vh'}}>
-      <ModalForm open={openValue} setOpen={()=>setOpenValue(c=>!c)} content={profileForm} title={'Profile'} func={()=>setOpenValue(c=>!c)}/>
+      <ModalForm open={openValue} close={()=>setOpenValue(false)} content={profileForm} title={'Profile'} func={()=>setOpenValue(c=>!c)}/>
       <Sider
         breakpoint="md"
         collapsedWidth="0"
@@ -70,7 +70,7 @@ const SideTopNav = ({content,links,footer}) => {
         <span style={{color:'white',fontWeight:'bold'}}>Dr Abebe Balcha</span>
         </div>
         <div style={{flexDirection:'column',display:'flex',alignItems:'center',gap:'10px'}}>
-        {links.map((d)=><Link onMouseEnter={()=>setHoverLink(d.href)} style={{color:pathName===d.href||hoverLink===d.href?"white":'rgb(200,200,200)',display:'flex',alignItems:'center',gap:'5px',width:'90%',height:'35px',background:pathName===d.href?'rgb(0,140,255)':'none',padding:'0 10px',borderRadius:'5px'}} href={d.href} key={d.key}>{d.icon} {d.label}</Link>)}
+        {links.map((d)=><Link onMouseEnter={()=>setHoverLink(d.href)} style={{color:pathName===d.href||hoverLink===d.href||pathName.startsWith(d.href)?"white":'rgb(200,200,200)',display:'flex',alignItems:'center',gap:'5px',width:'90%',height:'35px',background:pathName===d.href?'rgb(0,140,255)':'none',padding:'0 10px',borderRadius:'5px'}} href={d.href} key={d.key}>{d.icon} {d.label}</Link>)}
         </div>
       </Sider>
       <Layout>
@@ -84,6 +84,7 @@ const SideTopNav = ({content,links,footer}) => {
             ,gap:'20px'
           }}
         >
+      <IoNotifications size={20} cursor={'pointer'}/>
           <Dropdown
         menu={{
           items,
@@ -96,7 +97,8 @@ const SideTopNav = ({content,links,footer}) => {
         </Header>
         <Content
           style={{
-            margin: '16px 8px 0',
+              overflow:'scroll',
+              margin: '16px 8px 0',
           }}
         >
           <div
@@ -112,7 +114,8 @@ const SideTopNav = ({content,links,footer}) => {
         </Content>
         <Footer
           style={{
-            textAlign: 'center',
+            height:'50px'
+            ,display:'flex',justifyContent:'center',alignItems:'center'
           }}
         >
          {footer} ©{new Date().getFullYear()} by <Link href={'https://www.t.me/idofc'}>@idofc</Link>

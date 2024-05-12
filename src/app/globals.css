@@ -87,6 +87,7 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
+  overflow-y: hidden;
 }
 
 a {
@@ -98,4 +99,8 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+::-webkit-scrollbar{
+  width: 5px;
 }

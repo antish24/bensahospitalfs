@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
-const ModalForm = ({open,setOpen,title,content,func}) => {
+const ModalForm = ({open,close,title,content}) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleOk = () => {
     setConfirmLoading(true);
     setTimeout(() => {
-      setOpen(false);
+      close(false);
       setConfirmLoading(false);
     }, 2000);
   };
   const handleCancel = () => {
     console.log('Clicked cancel button');
-    setOpen(false);
+    close(false);
   };
   return (
       <Modal
@@ -21,6 +21,7 @@ const ModalForm = ({open,setOpen,title,content,func}) => {
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
+        footer={false}
       >
         {content}
       </Modal>

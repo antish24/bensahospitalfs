@@ -19,7 +19,7 @@ export const POST = async (request) => {
       return new NextResponse(JSON.stringify({message:"Email Not Found"}),{status:403})
     }
 
-    const match = await User.findOne({email:email,password:password});
+    const match = await bcrypt.compare (password, user.password);
 
     if( !match){
       return new NextResponse(JSON.stringify({message:"Invalid Password"}),{status:403})
@@ -29,7 +29,7 @@ export const POST = async (request) => {
     user.token=token
     await user.save();
 
-    return new NextResponse(JSON.stringify({token}), { status: 200 });
+    return new NextResponse(JSON.stringify({token,role}), { status: 200 });
   } catch (err) {
     console.log(err)
     return new NextResponse(JSON.stringify({ message: "Database Error" }), { status: 500 });

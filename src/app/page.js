@@ -16,7 +16,8 @@ const Landing = () => {
     try {
       const res=await axios.post(`/api/auth/login`,{email:values.email,password:values.password,role:values.role})
       setLoading(false)
-      localStorage.setItem('HFS_Token',res.data.token)
+      localStorage.setItem('BHPFMS_Token',res.data.token)
+      localStorage.setItem('BHPFMS_Role',res.data.role)
       navigate.replace(values.role)
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');

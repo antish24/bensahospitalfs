@@ -1,8 +1,9 @@
+import PrescriptionTable from '@/components/tables/PrescriptionTable'
 import React from 'react'
 
 const Prescription = () => {
   return (
-    <div>Physician Prescription</div>
+    <div><PrescriptionTable/></div>
   )
 }
 
