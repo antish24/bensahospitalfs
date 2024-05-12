@@ -1,4 +1,4 @@
-import { Form, Input, Select, Button,Option } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
 
 const NewDiagnosticForm = () => {
 
@@ -15,10 +15,21 @@ const NewDiagnosticForm = () => {
         name="test"
         label="Test"  
       >
-        <Select>
-          <Option value="xray">X-ray</Option>  
-          <Option value="mri">MRI</Option>
-        </Select>
+        <Select 
+        options={[
+          {
+            value: 'Male',
+            label: 'Male',
+          },
+          {
+            value: 'Female',
+            label: 'Female',
+          },
+          {
+            value: 'Ashy',
+            label: 'Ashy',
+          },
+        ]}/>
       </Form.Item>
 
       <Form.Item
@@ -42,11 +53,21 @@ const NewDiagnosticForm = () => {
         name="priority" 
         label="Priority"
       >
-        <Select>
-          <Option value="routine">Routine</Option>
-          <Option value="urgent">Urgent</Option> 
-          <Option value="stat">Stat</Option>
-        </Select>
+        <Select 
+        options={[
+          {
+            value: 'Male',
+            label: 'Male',
+          },
+          {
+            value: 'Female',
+            label: 'Female',
+          },
+          {
+            value: 'Ashy',
+            label: 'Ashy',
+          },
+        ]}/>
       </Form.Item>
 
       <Form.Item

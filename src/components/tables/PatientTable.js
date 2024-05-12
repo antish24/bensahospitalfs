@@ -167,7 +167,7 @@ const PatientTable = () => {
      width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`patient/${r.id}`)}><FaEye/></Button>,
+     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>,
     },
   ];
 
