@@ -1,4 +1,4 @@
-import { Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button,Option } from 'antd';
 
 const NewDiagnosticForm = () => {
 
