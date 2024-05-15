@@ -4,6 +4,7 @@ import {Button, Input, Space, Table} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { FaUpDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
+import { FormatDateTime } from '@/helper/FormatDate';
 
 const AppointmentTable = () => {
 
@@ -121,6 +122,8 @@ const AppointmentTable = () => {
       title: 'Appointment Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+
     },
     {
       title: 'Priority',

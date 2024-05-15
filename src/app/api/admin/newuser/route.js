@@ -78,7 +78,7 @@ async function sendMail (email, code, subject, msg) {
 
 function generatePassword () {
   const capitalLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const smallLetters = 'abcdefghijklmnopqrstuvwxyz';
+  const smallLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const numbers = '0123456789';
   const symbols = '0123456789';
 
@@ -122,6 +122,25 @@ function getRandomInt (max) {
   return Math.floor (Math.random () * Math.floor (max));
 }
 
+
+async function generateIdNo(role){
+  // Get last id doc
+  const lastDoc = await User.findOne({role: role}).sort({_id:-1})
+  if(!lastDoc) return role.toUpperCase().substring(0,2) +"-001";
+  // Extract dept code and number 
+  const deptCode = lastDoc.IdNo.split("-")[0];
+  let number = lastDoc.IdNo.split("-")[1];
+
+  // Increment number
+  number = parseInt(number) + 1;
+
+  // Pad with zeros
+  number = number.toString().padStart(3, '0');
+
+  // Return new id
+  return deptCode + "-" + number;
+}
+
 export const POST = async request => {
   const {email, role, fullName, phone, sex} = await request.json ();
 
@@ -136,8 +155,8 @@ export const POST = async request => {
       );
     }
 
-    const password = generatePassword ();
-    const IdNo = generatePassword ();
+    const password = '123456';
+    const IdNo =await generateIdNo(role);
     const hashPassword = await bcrypt.hash (password, 10);
 
     const newUser = new User ({

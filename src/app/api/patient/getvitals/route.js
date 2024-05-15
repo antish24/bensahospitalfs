@@ -1,9 +1,8 @@
 import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
-import Patient from '@/backend/model/Patient';
 import env from '@/backend/config/env';
-import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
+import Vitals from '@/backend/model/Vitals';
 
 const PASSWORDP = env.PASSWORDP;
 const EMAILP = env.EMAILP;
@@ -122,85 +121,14 @@ function getRandomInt (max) {
   return Math.floor (Math.random () * Math.floor (max));
 }
 
-
-async function generateIdNo() {
-
-  const deptCode = 'MFP';
-
-  let idNumber;
-
-  const lastDoc = await Patient.findOne()
-    .sort({_id:-1});
-
-  if(lastDoc) {
-
-    idNumber = lastDoc.IdNo.split("-")[1];
-    idNumber = parseInt(idNumber) + 1;
-
-  } else {
-
-    idNumber = '0001';
-
-  }
-
-  idNumber = idNumber.toString().padStart(4, '0');
-
-  return deptCode + "-" + idNumber;
-
-}
-
-export const POST = async request => {
-  const {
-    fullName,
-    sex,
-    dateOfBirth,
-    bloodType,
-    email,
-    phone,
-    city,
-    subCity,
-    emergencyContactName,
-    emergencyContactPhone,
-    emergencyContactRelationship,
-  } = await request.json ();
+export const GET = async request => {
 
   try {
     await connect ();
 
-    const patient = await Patient.findOne ({phone: phone});
-    if (patient) {
-      return new NextResponse (
-        JSON.stringify ({message: 'Patient Phone Existed'}),
-        {status: 403}
-      );
-    }
-
-    const password = generatePassword ();
-    const IdNo =await generateIdNo();
-    const hashPassword = await bcrypt.hash (password, 10);
-
-    const newPatient = new Patient ({
-      fullName,
-      IdNo,
-      sex,
-      dateOfBirth,
-      bloodType,
-      password: hashPassword,
-      email,
-      phone,
-      city,
-      subCity,
-      emergencyContactName,
-      emergencyContactPhone,
-      emergencyContactRelationship,
-    });
-    await newPatient.save ();
-
-    if(email!=='')
-    await sendMail (email, password, 'Your Patient Dashboard Login Password', 'Password : ');
-
+    const vitals = await Vitals.find();
     return new NextResponse (
-      JSON.stringify ({message: 'Patient Created Succesfully'}),
+      JSON.stringify ({vitals}),
       {status: 200}
     );
   } catch (err) {

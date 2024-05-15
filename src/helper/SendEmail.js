@@ -1,14 +1,10 @@
-import {NextResponse} from 'next/server';
-import connect from '@/backend/config/db';
 import env from '@/backend/config/env';
-import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
-import Patient from '@/backend/model/Patient';
 
 const PASSWORDP = env.PASSWORDP;
 const EMAILP = env.EMAILP;
 
-async function sendMail (email, code, subject, msg) {
+export async function sendMail (email, code, subject, msg) {
   try {
     // Create a transporter object using SMTP settings
     const transporter = nodemailer.createTransport ({
@@ -75,67 +71,3 @@ async function sendMail (email, code, subject, msg) {
     console.log (error);
   }
 }
-
-function generatePassword () {
-  const capitalLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const smallLetters = 'abcdefghijklmnopqrstuvwxyz';
-  const numbers = '0123456789';
-  const symbols = '0123456789';
-
-  let password = '';
-
-  // Generate at least one character from each category
-  password += getRandomCharacter (capitalLetters);
-  password += getRandomCharacter (smallLetters);
-  password += getRandomCharacter (numbers);
-  password += getRandomCharacter (symbols);
-
-  // Generate the remaining characters randomly
-  for (let i = 4; i < 8; i++) {
-    const characterType = getRandomInt (4); // 0: capital letter, 1: small letter, 2: number, 3: symbol
-
-    switch (characterType) {
-      case 0:
-        password += getRandomCharacter (capitalLetters);
-        break;
-      case 1:
-        password += getRandomCharacter (smallLetters);
-        break;
-      case 2:
-        password += getRandomCharacter (numbers);
-        break;
-      case 3:
-        password += getRandomCharacter (symbols);
-        break;
-    }
-  }
-
-  return password;
-}
-
-function getRandomCharacter (characterSet) {
-  const randomIndex = getRandomInt (characterSet.length);
-  return characterSet.charAt (randomIndex);
-}
-
-function getRandomInt (max) {
-  return Math.floor (Math.random () * Math.floor (max));
-}
-
-export const GET = async request => {
-
-  try {
-    await connect ();
-
-    const patients = await Patient.find().sort({_id:-1});;
-    return new NextResponse (
-      JSON.stringify ({patients}),
-      {status: 200}
-    );
-  } catch (err) {
-    console.log (err);
-    return new NextResponse (JSON.stringify ({message: 'Database Error'}), {
-      status: 500,
-    });
-  }
-};

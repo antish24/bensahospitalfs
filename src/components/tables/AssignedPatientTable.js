@@ -1,13 +1,17 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {Badge, Button, Input, Space, Table} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { FaEye } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
+import { FormatDateTime } from '@/helper/FormatDate';
+import { AlertContext } from '@/context/AlertContext';
+import axios from 'axios';
 
 const AssignedPatientTable = () => {
 
   const [searchedColumn, setSearchedColumn] = useState('');
+  const {openNotification} = useContext (AlertContext);
   const navigate=useRouter()
   const [searchText, setSearchText] = useState('');
   const searchInput = useRef(null);
@@ -121,33 +125,21 @@ const AssignedPatientTable = () => {
           title: 'Date Of Birth',
           dataIndex: 'dateofBirth',
           key: 'dateofBirth',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
         },
       ],
     },
     {
-        title: 'Vitals Info',
-        children: [
-          {
-            title: 'Complaint',
-            dataIndex: 'complaint',
-            key: 'complaint',
-          },
-          {
-            title: 'Priorty',
-            dataIndex: 'priorty',
-            key: 'priorty',
-          },
-          {
-            title: 'Severity',
-            dataIndex: 'severity',
-            key: 'severity',
-          },
-        ],
-      },
+      title: 'Priorty',
+      dataIndex: 'priorty',
+      key: 'priorty',
+    },
     {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+
     },
     {
      title: 'Action',
@@ -158,20 +150,24 @@ const AssignedPatientTable = () => {
     },
   ];
 
-  const data = [];
-  for (let i = 0; i < 17; ++i) {
-    data.push ({
-      key: i.toString (),
-      id: `FT0${i}4892`,
-      fullname: 'firstname middelname lastname',
-      sex: 'Male',
-      dateofBirth: '02/07/1984',
-      complaint: '910010890',
-      severity: 'mid',
-      priorty: 2,
-      createdAt: '2014-12-24 23:12:00',
-    });
+  const [patientData,setPatientData]=useState([])
+  const [loading,setLoading]=useState(false)
+
+  const getAssignedPatientsData=async()=>{
+    setLoading(true)
+    try {
+      const res = await axios.get (`/api/patient/assigned`);
+      setLoading (false);
+      setPatientData(res.data.patients)
+    } catch (error) {
+      setLoading (false);
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
   }
+
+  useEffect(()=>{
+    getAssignedPatientsData()
+  },[])
 
   return (
     <Table
@@ -179,11 +175,12 @@ const AssignedPatientTable = () => {
       scroll={{
         x: 1000,
       }}
+      loading={loading}
       pagination={{
         defaultPageSize: 7,
         showSizeChanger: false 
       }}
-      dataSource={data}
+      dataSource={patientData}
     />
   );
 };

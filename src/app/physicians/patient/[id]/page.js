@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {Badge, Button, Descriptions, Form, Input, Select, Tabs} from 'antd';
 import ModalForm from '@/components/modal/Modal';
 import NewAppointmentForm from '@/components/forms/NewAppointment';
@@ -7,18 +7,30 @@ import { AlertContext } from '@/context/AlertContext';
 import axios from 'axios';
 import NewPrescriptionForm from '@/components/forms/NewPrescriptionForm';
 import NewDiagnosticForm from '@/components/forms/NewDiagnosticRequest';
+import VitalsTab from '@/components/tabs/VitalsTab';
 
 const PatientDetailPhysician = () => {
+  const [patientData,setPatientData]=useState([])
+
+  const getPatientData=async()=>{
+    try {
+      const res=await axios.get('/api/patient/details/MFP-0001')
+      setPatientData(res.data.patient)
+      console.log(res.data.patient)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    getPatientData()
+  },[])
+
   const items = [
     {
       key: '1',
       label: 'Vitals',
-      children: 'Content of Tab Pane 1',
-    },
-    {
-      key: '2',
-      label: 'Medical History',
-      children: 'Content of Tab Pane 2',
+      children: <VitalsTab/>,
     },
     {
       key: '3',
@@ -68,6 +80,7 @@ const PatientDetailPhysician = () => {
     <Form
       layout="vertical"
       style={{width:'35%'}}
+      initialValues={patientData}
     >
       <h3>Personal Info</h3>
       <div style={{display:'grid',gridTemplateColumns:'auto auto'}}>

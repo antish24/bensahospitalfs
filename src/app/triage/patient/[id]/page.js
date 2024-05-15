@@ -1,27 +1,41 @@
 'use client'
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {Badge, Button, Descriptions, Form, Input, Select, Tabs} from 'antd';
 import ModalForm from '@/components/modal/Modal';
 import NewAppointmentForm from '@/components/forms/NewAppointment';
 import NewVitalsForm from '@/components/forms/NewVitals';
 import { AlertContext } from '@/context/AlertContext';
 import axios from 'axios';
+import VitalsTab from '@/components/tabs/VitalsTab';
+import AssignDocForm from '@/components/forms/AssignDocFrom';
+import { useParams } from 'next/navigation';
 
 const PatientDetail = () => {
  
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
 
+  const [patientData,setPatientData]=useState([])
+  const{id}=useParams()
+  const getPatientData=async()=>{
+    try {
+      const res=await axios.get(`/api/patient/details/${id}`)
+      setPatientData(res.data.patient)
+      console.log(res.data.patient)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    getPatientData()
+  },[])
+
   const items = [
     {
       key: '1',
       label: 'Vitals',
-      children: 'Content of Tab Pane 1',
-    },
-    {
-      key: '2',
-      label: 'Medical History',
-      children: 'Content of Tab Pane 2',
+      children: <VitalsTab/>,
     },
     {
       key: '3',
@@ -48,48 +62,59 @@ const PatientDetail = () => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`/api/patient/newvitals`, {
-        email: values.email,
-        password: values.password,
-        role: values.role,
+      const res = await axios.post (`/api/patient/details`, {
+      IdNo:id,
+      fullName:values.fullName,
+      sex:values.sex,
+      dateOfBirth:values.dateOfBirth,
+      bloodType:values.bloodType,
+      email:values.email,
+      phone:values.phone,
+      city:values.city,
+      subCity:values.subCity,
+      emergencyContactName:values.emergencyContactName,
+      emergencyContactPhone:values.emergencyContactPhone,
+      emergencyContactRelationship:values.emergencyContactRelationship,
       });
       setLoading (false);
-      openNotification ('error', 'good', 3, 'red');
+      openNotification ('sucess', res.data.message, 3, 'green');
     } catch (error) {
-      openNotification ('error', 'error.response.data.message', 3, 'red');
+      openNotification ('error', error.response.data.message, 3, 'red');
       setLoading (false);
     }
   };
   const onFinishFailed = errorInfo => {
     console.log ('Failed:', errorInfo);
   };
-  const [openVitals, setOpenVitals] = useState(false);
-  const [openAppointment, setOpenAppointment] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalContent, setModalContent] = useState();
+  const [modalContentTitle, setModalContentTitle] = useState('');
 
   return(
     <>
     <ModalForm
-      open={openVitals}
-      close={() => setOpenVitals (false)}
-      title={'Record Vitals'}
-      content={<NewVitalsForm />}
-    />
-    <ModalForm
-      open={openAppointment}
-      close={() => setOpenAppointment (false)}
-      title={'Set Appointment'}
-      content={<NewAppointmentForm />}
+      open={openModal}
+      close={() => setOpenModal (false)}
+      title={modalContentTitle}
+      content={modalContent}
     />
 
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
-    <div><Button style={{marginRight:'10px'}} onClick={() => setOpenVitals (true)}>Vitals</Button>
-    <Button onClick={() => setOpenAppointment (true)}>Set Appointment</Button></div>
+    <div style={{display:'flex',gap:'10px'}}>
+      <Button onClick={() =>{setModalContentTitle('Update Status');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Update Status</Button>
+      <Button onClick={() =>{setModalContentTitle('Assign Physician');setOpenModal (true);setModalContent(<AssignDocForm/>)}}>Assign</Button>
+      <Button onClick={() =>{setModalContentTitle('Wirte Vitals');setOpenModal (true);setModalContent(<NewVitalsForm/>)}}>Vitals</Button>
+      <Button onClick={() =>{setModalContentTitle('Set Appointment');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Set Appointment</Button>
+    </div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>
-    <Form
+    {Object.keys(patientData).length > 0 ? (
+      <Form
       layout="vertical"
       onFinish={onFinish}
+      initialValues={patientData}
+      disabled={loading}
       onFinishFailed={onFinishFailed}
       autoComplete="on"
       autoFocus="true"
@@ -100,7 +125,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Full Name"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Name',
+          },
+        ]}
         name="fullName"
       >
         <Input />
@@ -108,7 +138,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Sex"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Sex',
+          },
+        ]}
         name="sex"
       >
         <Input />
@@ -116,7 +151,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Date Of Birth"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input DOB',
+          },
+        ]}
         name="dateOfBirth"
       >
         <Input />
@@ -124,7 +164,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Blood Type"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Type',
+          },
+        ]}
         name="bloodType"
       >
         <Input />
@@ -137,7 +182,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Phone"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Phone',
+          },
+        ]}
         name="phone"
       >
         <Input />
@@ -145,14 +195,25 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Email"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Email',
+            type:'email'
+          },
+        ]}
         name="email"
       >
         <Input />
       </Form.Item>
       <Form.Item style={{margin:'5px'}}
         label="City"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input City',
+          },
+        ]}
         name="city"
       > 
       <Select
@@ -206,7 +267,12 @@ const PatientDetail = () => {
 
     <Form.Item style={{margin:'5px'}}
         label="Sub City"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Sub City',
+          },
+        ]}
         name="subCity"
       > 
       <Select
@@ -265,7 +331,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Full Name"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Name',
+          },
+        ]}
         name="emergencyContactName"
       >
         <Input />
@@ -273,7 +344,12 @@ const PatientDetail = () => {
       <Form.Item
         style={{margin: '5px'}}
         label="Phone"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Contact',
+          },
+        ]}
         name="emergencyContactPhone"
       >
         <Input />
@@ -281,7 +357,12 @@ const PatientDetail = () => {
       <Form.Item style={{margin:'5px'}}
         label="Relationship"
         name="emergencyContactRelationship"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Relationship',
+          },
+        ]}
 
       >
          <Select
@@ -322,6 +403,9 @@ const PatientDetail = () => {
         </Button>
       </Form.Item>
     </Form>
+    ) : (
+      <p>Loading patient data...</p>
+    )}
     <div style={{width:'63%',display:'flex',flexDirection:'column',gap:'10px',height:"70vh",overflow:'scroll'}}>
     <Tabs
         defaultActiveKey="1"

@@ -6,6 +6,7 @@ import { FaEye } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
+import { FormatDateTime } from '@/helper/FormatDate';
 
 const PatientTable = () => {
 
@@ -123,6 +124,8 @@ const PatientTable = () => {
           title: 'Date Of Birth',
           dataIndex: 'dateOfBirth',
           key: 'dateOfBirth',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+          
         },
       ],
     },
@@ -156,6 +159,8 @@ const PatientTable = () => {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+
     },
     {
       title: 'Status',
@@ -191,6 +196,8 @@ const PatientTable = () => {
     getPatientsData()
   },[])
   return (
+    <>
+    <Button loading={loading} onClick={getPatientsData}>Reload</Button>
     <Table
       columns={columns}
       scroll={{
@@ -203,6 +210,7 @@ const PatientTable = () => {
       dataSource={patientData}
       loading={loading}
     />
+    </>
   );
 };
 export default PatientTable;

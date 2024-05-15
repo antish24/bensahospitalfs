@@ -6,6 +6,7 @@ import { FaEye } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
+import { FormatDateTime } from '@/helper/FormatDate';
 
 const UserTable = () => {
 
@@ -120,11 +121,13 @@ const UserTable = () => {
           key: 'sex',
           width:'100px'
         },
-        {
-          title: 'Date Of Birth',
-          dataIndex: 'dateofBirth',
-          key: 'dateofBirth',
-        },
+        // {
+        //   title: 'Date Of Birth',
+        //   dataIndex: 'dateofBirth',
+        //   key: 'dateofBirth',
+        //   render:r=>(<span>{FormatDateTime(r)}</span>)
+
+        // },
       ],
     },
     {
@@ -152,6 +155,8 @@ const UserTable = () => {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+
     },
     {
       title: 'Status',

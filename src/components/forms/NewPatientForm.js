@@ -58,6 +58,44 @@ const NewPatientForm = ({modalOpen}) => {
       </Form.Item>
 
 <div style={{display:'flex',justifyContent:'space-between'}}>
+      <Form.Item style={{margin:'5px',width:'48%'}}
+        label="Gender"
+        name="sex"
+        required={true}
+
+      >
+         <Select
+    placeholder="Search to Select"
+    required={true}
+    options={[
+      {
+        value: 'Male',
+        label: 'Male',},
+        {
+          value: 'Female',
+          label: 'Female',},
+          {
+            value: 'Ashy',
+            label: 'Ashy',},
+      ]}
+        /> 
+      </Form.Item>
+
+      <Form.Item style={{margin:'5px',width:'48%'}}
+        label="Date of Birth"
+        rules={[
+          {
+            required: true,
+            type:'date',
+            message: 'Please input Phone',
+          },
+        ]}
+        name="dateOfBirth"    
+      >
+        <Input type='date'/>
+      </Form.Item>
+      </div>
+<div style={{display:'flex',justifyContent:'space-between'}}>
 <Form.Item style={{margin:'5px',width:'48%'}}
         label="City"
         rules={[
@@ -176,44 +214,7 @@ const NewPatientForm = ({modalOpen}) => {
   />
     </Form.Item>
 </div>
-<div style={{display:'flex',justifyContent:'space-between'}}>
-      <Form.Item style={{margin:'5px',width:'48%'}}
-        label="Gender"
-        name="sex"
-        required={true}
 
-      >
-         <Select
-    placeholder="Search to Select"
-    required={true}
-    options={[
-      {
-        value: 'Male',
-        label: 'Male',},
-        {
-          value: 'Female',
-          label: 'Female',},
-          {
-            value: 'Ashy',
-            label: 'Ashy',},
-      ]}
-        /> 
-      </Form.Item>
-
-      <Form.Item style={{margin:'5px',width:'48%'}}
-        label="Date of Birth"
-        rules={[
-          {
-            required: true,
-            type:'date',
-            message: 'Please input Phone',
-          },
-        ]}
-        name="dateOfBirth"    
-      >
-        <Input type='date'/>
-      </Form.Item>
-      </div>
       <Form.Item style={{margin:'5px'}}
         label="Phone"
         rules={[

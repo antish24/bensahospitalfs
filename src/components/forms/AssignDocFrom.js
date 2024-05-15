@@ -1,12 +1,11 @@
 'use client';
 import {AlertContext} from '@/context/AlertContext';
-import {Button, Form, Input, Select} from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import {Button, Form, Select} from 'antd';
 import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
 
-const NewVitalsForm = () => {
+const AssignDocForm = () => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
@@ -14,13 +13,11 @@ const NewVitalsForm = () => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`/api/patient/writevitals`, {
+      const res = await axios.post (`/api/patient/assigndoc`, {
         patientId:'jj',
-      complaint:values.complaint,
-      medicalHistory:values.medicalHistory,
-      symptoms:values.symptoms,
-      symptomSeverity:values.severity,
-      vitalsSigns:values.vitalSign,
+        priority:values.priority,
+        department:values.department,
+        physician:values.physician,
       });
       setLoading (false);
       openNotification ('error', res.data.message, 3, 'green');
@@ -43,52 +40,70 @@ const NewVitalsForm = () => {
     >
       <Form.Item
         style={{margin: '5px'}}
-        label="Complaint"
+        label="Priority"
+        name="priority"
         rules={[
           {
             required: true,
-            message: 'Please input Complaint',
+            message: 'Please input Priority',
           },
         ]}
-        name="complaint"
       >
-        <Input />
+        <Select
+          placeholder="Search to Select"
+          options={[
+            {
+              value: 'High',
+              label: 'High',
+            },
+            {
+              value: 'Mid',
+              label: 'Mid',
+            },
+            {
+              value: 'Normal',
+              label: 'Normal',
+            },
+          ]}
+        />
       </Form.Item>
       <Form.Item
         style={{margin: '5px'}}
-        label="Symptoms"
+        label="Department"
+        name="department"
         rules={[
           {
             required: true,
-            message: 'Please input Symptoms',
+            message: 'Please input Department',
           },
         ]}
-        name="symptoms"
       >
-        <Input />
+        <Select
+          placeholder="Search to Select"
+          options={[
+            {
+              value: 'Male',
+              label: 'Male',
+            },
+            {
+              value: 'Female',
+              label: 'Female',
+            },
+            {
+              value: 'Ashy',
+              label: 'Ashy',
+            },
+          ]}
+        />
       </Form.Item>
       <Form.Item
         style={{margin: '5px'}}
-        label="Medical history"
+        label="Physician"
+        name="physician"
         rules={[
           {
             required: true,
-            message: 'Please input Medical',
-          },
-        ]}
-        name="medicalHistory"
-      >
-        <Input />
-      </Form.Item>
-      
-      <Form.Item
-        style={{margin: '5px'}}
-        label="Symptom severity"
-        name="severity"
-        rules={[
-          {
-            required: true,
-            message: 'Please input severity',
+            message: 'Please input Physician',
           },
         ]}
       >
@@ -112,20 +127,6 @@ const NewVitalsForm = () => {
       </Form.Item>
 
       <Form.Item
-        style={{margin: '5px'}}
-        label="Vitals Signs"
-        rules={[
-          {
-            required: true,
-            message: 'Please input Vitals',
-          },
-        ]}
-        name="vitalSign"
-      >
-        <TextArea />
-      </Form.Item>
-
-      <Form.Item
         style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}
       >
         <Button
@@ -141,4 +142,4 @@ const NewVitalsForm = () => {
   );
 };
 
-export default NewVitalsForm;
+export default AssignDocForm;

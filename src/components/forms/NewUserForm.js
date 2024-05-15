@@ -19,6 +19,7 @@ const NewUserForm = ({openModalFun}) => {
         sex: values.sex,
         fullName: values.fullName,
         role: values.role,
+        department: values.department,
       });
       setLoading (false);
       openModalFun(false)
@@ -53,6 +54,33 @@ const NewUserForm = ({openModalFun}) => {
       </Form.Item>
 
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
+
+      <Form.Item
+          style={{margin: '5px', width: '48%'}}
+          label="Gender"
+          name="sex"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Gender',
+            },
+          ]}
+        >
+          <Select
+            placeholder="Search to Select"
+            options={[
+              {
+                value: 'Male',
+                label: 'Male',
+              },
+              {
+                value: 'Female',
+                label: 'Female',
+              },
+            ]}
+          />
+        </Form.Item>
+        
         <Form.Item
           style={{margin: '5px', width: '48%'}}
           label="Role"
@@ -115,14 +143,8 @@ const NewUserForm = ({openModalFun}) => {
 
         <Form.Item
           style={{margin: '5px', width: '48%'}}
-          label="Gender"
-          name="sex"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Gender',
-            },
-          ]}
+          label="Department"
+          name="department"
         >
           <Select
             placeholder="Search to Select"
