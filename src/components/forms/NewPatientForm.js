@@ -4,11 +4,31 @@ import { Button, Form, Input, Select } from 'antd'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useState } from 'react'
+import City from '@/helper/City.json'
 
 const NewPatientForm = ({modalOpen}) => {
   const {openNotification}=useContext(AlertContext)
   const navigate=useRouter()
   const [loading,setLoading]=useState(false)
+
+  const cityOptions = City.map(city => ({
+    value: city.city, 
+    label: city.city
+  }));
+
+  const [cityValue, setCityValue] = useState();
+
+const handleCityChange = (value) => {
+  setCityValue(value);
+}
+  const getSubCityOptions = () => {
+    if(!cityValue) return [];
+    
+    return City.find(c => c.city === cityValue).subCities.map(sc => ({
+      value: sc.name,
+      label: sc.name
+    }));
+  }
 
   const onFinish =async (values) => {
     setLoading(true)
@@ -61,12 +81,16 @@ const NewPatientForm = ({modalOpen}) => {
       <Form.Item style={{margin:'5px',width:'48%'}}
         label="Gender"
         name="sex"
-        required={true}
+        rules={[
+          {
+            required: true,
+            message: 'Please input Gender',
+          },
+        ]}
 
       >
          <Select
     placeholder="Search to Select"
-    required={true}
     options={[
       {
         value: 'Male',
@@ -74,9 +98,7 @@ const NewPatientForm = ({modalOpen}) => {
         {
           value: 'Female',
           label: 'Female',},
-          {
-            value: 'Ashy',
-            label: 'Ashy',},
+          
       ]}
         /> 
       </Form.Item>
@@ -107,6 +129,7 @@ const NewPatientForm = ({modalOpen}) => {
         name="city"
       > 
       <Select
+      onChange={handleCityChange}
     showSearch
     placeholder="Search to Select"
     optionFilterProp="children"
@@ -114,44 +137,7 @@ const NewPatientForm = ({modalOpen}) => {
     filterSort={(optionA, optionB) =>
       (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
     }
-    options={[
-      {
-        value: 'bedmanger',
-        label: 'Bed Manager',
-      },
-      {
-        value: 'cashier',
-        label: 'Cashier',
-      },
-      {
-        value: 'pharmacy',
-        label: 'Pharmacy',
-      },
-      {
-        value: 'physicians',
-        label: 'Physicians',
-      },
-      {
-        value: 'triage',
-        label: 'Triage',
-      },
-      {
-        value: 'diagnosticservices',
-        label: 'Diagnostic Services',
-      },
-      {
-        value: 'systemadmin',
-        label: 'System Admin',
-      },
-      {
-        value: 'ceomanagement',
-        label: 'CEO Manager',
-      },
-      {
-        value: 'patient',
-        label: 'Patient',
-      },
-    ]}
+    options={cityOptions}
   />
     </Form.Item>
 
@@ -173,44 +159,7 @@ const NewPatientForm = ({modalOpen}) => {
     filterSort={(optionA, optionB) =>
       (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
     }
-    options={[
-      {
-        value: 'bedmanger',
-        label: 'Bed Manager',
-      },
-      {
-        value: 'cashier',
-        label: 'Cashier',
-      },
-      {
-        value: 'pharmacy',
-        label: 'Pharmacy',
-      },
-      {
-        value: 'physicians',
-        label: 'Physicians',
-      },
-      {
-        value: 'triage',
-        label: 'Triage',
-      },
-      {
-        value: 'diagnosticservices',
-        label: 'Diagnostic Services',
-      },
-      {
-        value: 'systemadmin',
-        label: 'System Admin',
-      },
-      {
-        value: 'ceomanagement',
-        label: 'CEO Manager',
-      },
-      {
-        value: 'patient',
-        label: 'Patient',
-      },
-    ]}
+    options={getSubCityOptions()}
   />
     </Form.Item>
 </div>

@@ -5,14 +5,14 @@ import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import { FaEye } from 'react-icons/fa6';
 
-const VitalsTab = () => {
+const VitalsTab = ({id}) => {
   const [patinetVitals, setPatientVitals] = useState ([]);
   const [loading, setLoading] = useState (false);
 
   const getPatientVitals = async () => {
     setLoading (true);
     try {
-      const res = await axios.get (`/api/patient/getvitals`);
+      const res = await axios.get (`/api/patient/getvitals/${id}`);
       setLoading (false);
       console.log (res.data);
       setPatientVitals (res.data.vitals);
@@ -84,6 +84,7 @@ const VitalsTab = () => {
 
   return (
     <div style={{height: '500px', overflow: 'scroll'}}>
+      <Button onClick={getPatientVitals} loading={loading}>Reload</Button>
       <Table
         columns={columns}
         scroll={{

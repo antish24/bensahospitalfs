@@ -9,11 +9,33 @@ import axios from 'axios';
 import VitalsTab from '@/components/tabs/VitalsTab';
 import AssignDocForm from '@/components/forms/AssignDocFrom';
 import { useParams } from 'next/navigation';
+import City from '@/helper/City.json'
 
 const PatientDetail = () => {
  
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
+  const [PId, setPId] = useState ('');
+
+
+  const cityOptions = City.map(city => ({
+    value: city.city, 
+    label: city.city
+  }));
+
+  const [cityValue, setCityValue] = useState();
+
+const handleCityChange = (value) => {
+  setCityValue(value);
+}
+  const getSubCityOptions = () => {
+    if(!cityValue) return [];
+    
+    return City.find(c => c.city === cityValue).subCities.map(sc => ({
+      value: sc.name,
+      label: sc.name
+    }));
+  }
 
   const [patientData,setPatientData]=useState([])
   const{id}=useParams()
@@ -21,6 +43,7 @@ const PatientDetail = () => {
     try {
       const res=await axios.get(`/api/patient/details/${id}`)
       setPatientData(res.data.patient)
+      setPId(res.data.patient._id)
       console.log(res.data.patient)
     } catch (error) {
       console.log(error)
@@ -35,7 +58,7 @@ const PatientDetail = () => {
     {
       key: '1',
       label: 'Vitals',
-      children: <VitalsTab/>,
+      children: <VitalsTab id={id}/>,
     },
     {
       key: '3',
@@ -102,10 +125,10 @@ const PatientDetail = () => {
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
     <div style={{display:'flex',gap:'10px'}}>
-      <Button onClick={() =>{setModalContentTitle('Update Status');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Update Status</Button>
-      <Button onClick={() =>{setModalContentTitle('Assign Physician');setOpenModal (true);setModalContent(<AssignDocForm/>)}}>Assign</Button>
-      <Button onClick={() =>{setModalContentTitle('Wirte Vitals');setOpenModal (true);setModalContent(<NewVitalsForm/>)}}>Vitals</Button>
-      <Button onClick={() =>{setModalContentTitle('Set Appointment');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Set Appointment</Button>
+      <Button onClick={() =>{setModalContentTitle('Update Status');setOpenModal (true);setModalContent(<NewAppointmentForm id={PId}/>)}}>Update Status</Button>
+      <Button onClick={() =>{setModalContentTitle('Assign Physician');setOpenModal (true);setModalContent(<AssignDocForm id={PId}/>)}}>Assign</Button>
+      <Button onClick={() =>{setModalContentTitle('Wirte Vitals');setOpenModal (true);setModalContent(<NewVitalsForm id={id}/>)}}>Vitals</Button>
+      <Button onClick={() =>{setModalContentTitle('Set Appointment');setOpenModal (true);setModalContent(<NewAppointmentForm id={PId}/>)}}>Set Appointment</Button>
     </div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>
@@ -146,7 +169,19 @@ const PatientDetail = () => {
         ]}
         name="sex"
       >
-        <Input />
+        <Select
+    placeholder="Search to Select"
+    required={true}
+    options={[
+      {
+        value: 'Male',
+        label: 'Male',},
+        {
+          value: 'Female',
+          label: 'Female',},
+          
+      ]}
+        />
       </Form.Item>
       <Form.Item
         style={{margin: '5px'}}
@@ -172,7 +207,39 @@ const PatientDetail = () => {
         ]}
         name="bloodType"
       >
-        <Input />
+        <Select
+    placeholder="Search to Select"
+    required={true}
+    options={[
+      {
+        value: 'NA',
+        label: 'NA',},
+      {
+        value: 'A+',
+        label: 'A+',},
+        {
+          value: 'A-',
+          label: 'A-',},
+          {
+            value: 'A+',
+            label: 'A+',},
+            {
+              value: 'A-',
+              label: 'A-',},
+              {
+                value: 'AB+',
+                label: 'AB+',},
+                {
+                  value: 'AB-',
+                  label: 'AB-',},
+                  {
+                    value: 'O+',
+                    label: 'O+',},
+                    {
+                      value: 'O-',
+                      label: 'O-',},
+      ]}
+        />
       </Form.Item>
       </div>
 
@@ -218,50 +285,14 @@ const PatientDetail = () => {
       > 
       <Select
     showSearch
+    onChange={handleCityChange}
     placeholder="Search to Select"
     optionFilterProp="children"
     filterOption={(input, option) => (option?.label ?? '').includes(input)}
     filterSort={(optionA, optionB) =>
       (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
     }
-    options={[
-      {
-        value: 'bedmanger',
-        label: 'Bed Manager',
-      },
-      {
-        value: 'cashier',
-        label: 'Cashier',
-      },
-      {
-        value: 'pharmacy',
-        label: 'Pharmacy',
-      },
-      {
-        value: 'physicians',
-        label: 'Physicians',
-      },
-      {
-        value: 'triage',
-        label: 'Triage',
-      },
-      {
-        value: 'diagnosticservices',
-        label: 'Diagnostic Services',
-      },
-      {
-        value: 'systemadmin',
-        label: 'System Admin',
-      },
-      {
-        value: 'ceomanagement',
-        label: 'CEO Manager',
-      },
-      {
-        value: 'patient',
-        label: 'Patient',
-      },
-    ]}
+    options={cityOptions}
   />
     </Form.Item>
 
@@ -283,44 +314,7 @@ const PatientDetail = () => {
     filterSort={(optionA, optionB) =>
       (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
     }
-    options={[
-      {
-        value: 'bedmanger',
-        label: 'Bed Manager',
-      },
-      {
-        value: 'cashier',
-        label: 'Cashier',
-      },
-      {
-        value: 'pharmacy',
-        label: 'Pharmacy',
-      },
-      {
-        value: 'physicians',
-        label: 'Physicians',
-      },
-      {
-        value: 'triage',
-        label: 'Triage',
-      },
-      {
-        value: 'diagnosticservices',
-        label: 'Diagnostic Services',
-      },
-      {
-        value: 'systemadmin',
-        label: 'System Admin',
-      },
-      {
-        value: 'ceomanagement',
-        label: 'CEO Manager',
-      },
-      {
-        value: 'patient',
-        label: 'Patient',
-      },
-    ]}
+    options={getSubCityOptions()}
   />
     </Form.Item>
       </div>

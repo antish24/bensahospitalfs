@@ -4,7 +4,7 @@ import React from 'react'
 const Appointment = () => {
   return (
     <div>
-      <AssignedAppointmentTable/>
+      <AssignedAppointmentTable id={'c'}/>
     </div>
   )
 }

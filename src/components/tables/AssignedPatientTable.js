@@ -100,9 +100,9 @@ const AssignedPatientTable = () => {
     {
       title: 'ID No',
       fixed: 'left',
-      dataIndex: 'id',
-      rowScope: 'id',
-      ...getColumnSearchProps('id'),
+      dataIndex: 'IdNo',
+      rowScope: 'IdNo',
+      ...getColumnSearchProps('IdNo'),
     },
     {
       title: 'Patient Info',
@@ -110,9 +110,9 @@ const AssignedPatientTable = () => {
       children: [
         {
           title: 'Full Name',
-          dataIndex: 'fullname',
-          ...getColumnSearchProps('fullname'),
-          key: 'fullname',
+          dataIndex: 'fullName',
+          ...getColumnSearchProps('fullName'),
+          key: 'fullName',
           width:"300px"
         },
         {
@@ -123,8 +123,8 @@ const AssignedPatientTable = () => {
         },
         {
           title: 'Date Of Birth',
-          dataIndex: 'dateofBirth',
-          key: 'dateofBirth',
+          dataIndex: 'dateOfBirth',
+          key: 'dateOfBirth',
       render:r=>(<span>{FormatDateTime(r)}</span>)
         },
       ],
@@ -146,7 +146,7 @@ const AssignedPatientTable = () => {
      width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`patient/${r.id}`)}><FaEye/></Button>,
+     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>,
     },
   ];
 
@@ -158,6 +158,7 @@ const AssignedPatientTable = () => {
     try {
       const res = await axios.get (`/api/patient/assigned`);
       setLoading (false);
+      console.log(res.data.patients)
       setPatientData(res.data.patients)
     } catch (error) {
       setLoading (false);

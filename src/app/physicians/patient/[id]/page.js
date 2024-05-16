@@ -8,14 +8,19 @@ import axios from 'axios';
 import NewPrescriptionForm from '@/components/forms/NewPrescriptionForm';
 import NewDiagnosticForm from '@/components/forms/NewDiagnosticRequest';
 import VitalsTab from '@/components/tabs/VitalsTab';
+import { useParams } from 'next/navigation';
+import NewPhAppointmentForm from '@/components/forms/NewPhAppointment';
 
 const PatientDetailPhysician = () => {
+  const{id}=useParams()
   const [patientData,setPatientData]=useState([])
+  const [PId, setPId] = useState ('');
 
   const getPatientData=async()=>{
     try {
-      const res=await axios.get('/api/patient/details/MFP-0001')
+      const res=await axios.get(`/api/patient/details/${id}`)
       setPatientData(res.data.patient)
+      setPId(res.data.patient._id)
       console.log(res.data.patient)
     } catch (error) {
       console.log(error)
@@ -30,7 +35,7 @@ const PatientDetailPhysician = () => {
     {
       key: '1',
       label: 'Vitals',
-      children: <VitalsTab/>,
+      children: <VitalsTab id={id}/>,
     },
     {
       key: '3',
@@ -71,12 +76,13 @@ const PatientDetailPhysician = () => {
     <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
     <div>
         <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Treatment</Button>
-        <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Bed Request');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Bed Request</Button>
+        <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Bed Request');setOpenModal (true);setModalContent(<NewPhAppointmentForm/>)}}>Bed Request</Button>
         <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Diagnostic');setOpenModal (true);setModalContent(<NewDiagnosticForm/>)}}>Diagnostic</Button>
         <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Prescription');setOpenModal (true);setModalContent(<NewPrescriptionForm/>)}}>Prescription</Button>
-        <Button onClick={() => {setModalContentTitle('Appointment');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Set Appointment</Button></div>
+        <Button onClick={() => {setModalContentTitle('Appointment');setOpenModal (true);setModalContent(<NewPhAppointmentForm id={PId}/>)}}>Set Appointment</Button></div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>
+{Object.keys(patientData).length > 0 ? (
     <Form
       layout="vertical"
       style={{width:'35%'}}
@@ -139,8 +145,8 @@ const PatientDetailPhysician = () => {
     </Form.Item>
 
     <Form.Item style={{margin:'5px'}}
-        label="Address"
-        name="address"
+        label="Subcity"
+        name="subCity"
       > 
       <Input disabled/>
     </Form.Item>
@@ -165,7 +171,7 @@ const PatientDetailPhysician = () => {
       </Form.Item>
       <Form.Item style={{margin:'5px'}}
         label="Relationship"
-        name="relationship"
+        name="emergencyContactRelationship"
 
       >
         <Input disabled/>
@@ -174,6 +180,9 @@ const PatientDetailPhysician = () => {
       </div>
 
     </Form>
+):
+    <p>Loading patient data...</p>
+}
     <div style={{width:'63%',display:'flex',flexDirection:'column',gap:'10px',height:"70vh",overflow:'scroll'}}>
     <Tabs
         defaultActiveKey="1"

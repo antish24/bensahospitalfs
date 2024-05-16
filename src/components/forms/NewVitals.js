@@ -6,7 +6,7 @@ import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
 
-const NewVitalsForm = () => {
+const NewVitalsForm = ({id}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
@@ -15,7 +15,7 @@ const NewVitalsForm = () => {
     setLoading (true);
     try {
       const res = await axios.post (`/api/patient/writevitals`, {
-        patientId:'jj',
+        patientId:id,
       complaint:values.complaint,
       medicalHistory:values.medicalHistory,
       symptoms:values.symptoms,
@@ -96,16 +96,16 @@ const NewVitalsForm = () => {
           placeholder="Search to Select"
           options={[
             {
-              value: 'Male',
-              label: 'Male',
+              value: 'High',
+              label: 'High',
             },
             {
-              value: 'Female',
-              label: 'Female',
+              value: 'Mid',
+              label: 'Mid',
             },
             {
-              value: 'Ashy',
-              label: 'Ashy',
+              value: 'Normal',
+              label: 'Normal',
             },
           ]}
         />

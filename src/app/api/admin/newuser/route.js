@@ -142,8 +142,8 @@ async function generateIdNo(role){
 }
 
 export const POST = async request => {
-  const {email, role, fullName, phone, sex} = await request.json ();
-
+  const {email, role, fullName, phone, sex,department} = await request.json ();
+console.log(department)
   try {
     await connect ();
 
@@ -165,6 +165,7 @@ export const POST = async request => {
       email: email,
       password: hashPassword,
       phone: phone,
+      department:department,
       sex: sex,
       role: role,
     });

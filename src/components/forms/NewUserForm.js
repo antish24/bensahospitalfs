@@ -4,11 +4,26 @@ import {Button, Form, Input, Select} from 'antd';
 import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
+import DepartmentList from '@/helper/Department.json'
 
 const NewUserForm = ({openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
+
+  const [roleValue, setRoleValue] = useState();
+
+  const handleRole = (value) => {
+    setRoleValue(value);
+  }
+
+  let departmentOption =[] 
+  if(roleValue==='physicians'){
+    departmentOption=DepartmentList.map(d => ({
+      value: d.name, 
+      label: d.name
+    }));
+  }
 
   const onFinish = async values => {
     setLoading (true);
@@ -94,6 +109,7 @@ const NewUserForm = ({openModalFun}) => {
         >
           <Select
             showSearch
+            onChange={handleRole}
             placeholder="Search to Select"
             optionFilterProp="children"
             filterOption={(input, option) => (option?.label ?? '').includes(input)}
@@ -133,33 +149,28 @@ const NewUserForm = ({openModalFun}) => {
                 value: 'ceomanagement',
                 label: 'CEO Manager',
               },
-              {
-                value: 'patient',
-                label: 'Patient',
-              },
             ]}
           />
         </Form.Item>
 
-        <Form.Item
+        {
+          roleValue==='physicians'&&<Form.Item
           style={{margin: '5px', width: '48%'}}
           label="Department"
           name="department"
+          rules={[
+            {
+              required: roleValue==='physicians',
+              message: 'Please input Department',
+            },
+          ]}
         >
           <Select
             placeholder="Search to Select"
-            options={[
-              {
-                value: 'Male',
-                label: 'Male',
-              },
-              {
-                value: 'Female',
-                label: 'Female',
-              },
-            ]}
+            options={departmentOption}
           />
         </Form.Item>
+        }
 
       </div>
       <Form.Item

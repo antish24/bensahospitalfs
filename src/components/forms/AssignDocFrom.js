@@ -3,19 +3,58 @@ import {AlertContext} from '@/context/AlertContext';
 import {Button, Form, Select} from 'antd';
 import axios from 'axios';
 import {useRouter} from 'next/navigation';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+import DepartmentList from '@/helper/Department.json'
 
-const AssignDocForm = () => {
+const AssignDocForm = ({id}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
 
+
+  const [nameloading,setnameLoading]=useState(false)
+
+  const departmentOption=DepartmentList.map(d => ({
+    value: d.name, 
+    label: d.name
+  }));
+
+  const [depValue, setdepValue] = useState();
+  const [physicianNames, setphysicianNames] = useState([]);
+
+  const physicainNameOptions=physicianNames.map(d => ({
+    value: d.IdNo, 
+    label: d.fullName
+  }));
+
+  const handleDep = (value) => {
+    setphysicianNames([])
+    setdepValue(value);
+  }
+
+
+  const getPhysiciansName =async () => {
+    setnameLoading(true)
+    try {
+      const res=await axios.get(`/api/physician/name/${depValue}`)
+      setnameLoading(false)
+      console.log(res.data.names)
+      setphysicianNames(res.data.names);
+    } catch (error) {
+      setnameLoading(false)
+      openNotification('error',error.response.data.message,3,'red');
+    }
+  };
+
+  useEffect(()=>{getPhysiciansName()},[depValue])
+
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`/api/patient/assigndoc`, {
-        patientId:'jj',
-        priority:values.priority,
+      console.log(id)
+      const res = await axios.post (`/api/patient/assign`, {
+        patientId:id,
+        priorty:values.priorty,
         department:values.department,
         physician:values.physician,
       });
@@ -40,12 +79,12 @@ const AssignDocForm = () => {
     >
       <Form.Item
         style={{margin: '5px'}}
-        label="Priority"
-        name="priority"
+        label="Priorty"
+        name="priorty"
         rules={[
           {
             required: true,
-            message: 'Please input Priority',
+            message: 'Please input priorty',
           },
         ]}
       >
@@ -80,20 +119,8 @@ const AssignDocForm = () => {
       >
         <Select
           placeholder="Search to Select"
-          options={[
-            {
-              value: 'Male',
-              label: 'Male',
-            },
-            {
-              value: 'Female',
-              label: 'Female',
-            },
-            {
-              value: 'Ashy',
-              label: 'Ashy',
-            },
-          ]}
+          onChange={handleDep}
+          options={departmentOption}
         />
       </Form.Item>
       <Form.Item
@@ -109,20 +136,7 @@ const AssignDocForm = () => {
       >
         <Select
           placeholder="Search to Select"
-          options={[
-            {
-              value: 'Male',
-              label: 'Male',
-            },
-            {
-              value: 'Female',
-              label: 'Female',
-            },
-            {
-              value: 'Ashy',
-              label: 'Ashy',
-            },
-          ]}
+          options={physicainNameOptions}
         />
       </Form.Item>
 
