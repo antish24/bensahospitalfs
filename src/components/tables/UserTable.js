@@ -194,6 +194,7 @@ const UserTable = () => {
 
   return (
     <Table
+      size='small'
       columns={columns}
       scroll={{
         x: 2000,

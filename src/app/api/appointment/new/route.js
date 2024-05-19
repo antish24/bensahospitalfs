@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import Appointment from '@/backend/model/Appointment';
+import User from '@/backend/model/User';
 
 export const POST = async request => {
   const {
@@ -9,18 +10,28 @@ export const POST = async request => {
     physician,
     priority,
     appointmentDate,
+    duration,
+    startTime,
     description,
   } = await request.json ();
 
   try {
     await connect ();
 
+    let dep=department;
+    if(department===''){
+      let user=await User.findOne({IdNo:physician})
+      dep=user.department
+    }
+
     const newAppointment = new Appointment ({
       patientId,
-      department,
+      department:dep,
       physician,
       priority,
       appointmentDate,
+      startTime,
+      duration,
       description,
     });
     await newAppointment.save ();

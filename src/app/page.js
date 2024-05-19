@@ -17,8 +17,11 @@ const Landing = () => {
       const res=await axios.post(`/api/auth/login`,{email:values.email,password:values.password,role:values.role})
       setLoading(false)
       localStorage.setItem('BHPFMS_Token',res.data.token)
+      localStorage.setItem('BHPFMS_IdNo',res.data.IdNo)
       localStorage.setItem('BHPFMS_Role',res.data.role)
       navigate.replace(values.role)
+      openNotification('succes','Login Successfully',3,'green');
+
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');
       setLoading(false)
@@ -124,10 +127,6 @@ const Landing = () => {
       {
         value: 'ceomanagement',
         label: 'CEO Manager',
-      },
-      {
-        value: 'patient',
-        label: 'Patient',
       },
     ]}
   />

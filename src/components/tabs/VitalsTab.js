@@ -28,7 +28,7 @@ const VitalsTab = ({id}) => {
 
   const columns = [
     {
-      title: 'Symptom Severity',
+      title: 'Severity',
       dataIndex: 'symptomSeverity',
       key: 'symptomSeverity',
       render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
@@ -86,6 +86,7 @@ const VitalsTab = ({id}) => {
     <div style={{height: '500px', overflow: 'scroll'}}>
       <Button onClick={getPatientVitals} loading={loading}>Reload</Button>
       <Table
+      size='small'
         columns={columns}
         scroll={{
           x: 1500,

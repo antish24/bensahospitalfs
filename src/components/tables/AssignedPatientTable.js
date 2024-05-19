@@ -156,7 +156,7 @@ const AssignedPatientTable = () => {
   const getAssignedPatientsData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get (`/api/patient/assigned`);
+      const res = await axios.get (`/api/patient/assigned/${localStorage.getItem ('BHPFMS_IdNo')}`);
       setLoading (false);
       console.log(res.data.patients)
       setPatientData(res.data.patients)
@@ -172,6 +172,7 @@ const AssignedPatientTable = () => {
 
   return (
     <Table
+      size='small'
       columns={columns}
       scroll={{
         x: 1000,

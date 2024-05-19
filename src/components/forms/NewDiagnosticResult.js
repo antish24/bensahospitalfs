@@ -4,30 +4,23 @@ import {Button, Form, Input, Select} from 'antd';
 import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
-import BodyType from '@/helper/BodyPart.json'
-import DiagnosticTest from '@/helper/DiagnosticTest.json'
 
-const NewDiagnosticForm = ({id}) => {
+const NewDiagnosticResultForm = ({id}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
 
-  let DiagnosticTestOption=DiagnosticTest.map(d => ({
-      value: d.name, 
-      label: d.name
-    }));
-
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`/api/diagnostic/new`, {
+      const res = await axios.post (`/api/diagnostic/results/write`, {
         patientId: id,
-        physicianId: localStorage.getItem ('BHPFMS_IdNo'),
+        diagnosticId: localStorage.getItem ('BHPFMS_IdNo'),
         test:values.test,
-        bodyType:values.bodyType,
-        reason:values.reason,
-        priority:values.priority,
-        instructions:values.instructions,
+        findings:values.findings,
+        image:values.image,
+        conclusions:values.conclusions,
+        notes:values.notes,
       });
       setLoading (false);
       openNotification ('error', res.data.message, 3, 'green');
@@ -52,9 +45,7 @@ const NewDiagnosticForm = ({id}) => {
           },
         ]}
       >
-        <Select
-          options={DiagnosticTestOption}
-        />
+        <Input/>
       </Form.Item>
 
       <Form.Item
@@ -62,11 +53,11 @@ const NewDiagnosticForm = ({id}) => {
         rules={[
           {
             required: true,
-            message: 'Please input Body Type',
+            message: 'Please input Findings',
           },
         ]}
-        name="bodyType"
-        label="Body Part"
+        name="findings"
+        label="Findings"
       >
         <Input />
       </Form.Item>
@@ -76,53 +67,24 @@ const NewDiagnosticForm = ({id}) => {
         rules={[
           {
             required: true,
-            message: 'Please input Reason',
+            message: 'Please input Conclusions',
           },
         ]}
         style={{margin: '0'}}
-        name="reason"
-        label="Reason"
+        name="conclusions"
+        label="Conclusions"
       >
         <Input.TextArea />
       </Form.Item>
 
       <Form.Item
-        style={{margin: '0'}}
-        rules={[
-          {
-            required: true,
-            message: 'Please input Priority',
-          },
-        ]}
-        name="priority"
-        label="Priority"
-      >
-        <Select
-          options={[
-            {
-              value: 'High',
-              label: 'High',
-            },
-            {
-              value: 'Mid',
-              label: 'Mid',
-            },
-            {
-              value: 'Normal',
-              label: 'Normal',
-            },
-          ]}
-        />
-      </Form.Item>
-
-      <Form.Item
         style={{marginTop: '10px'}}
-        name="instructions"
-        label="Instructions"
+        name="notes"
+        label="Notes"
         rules={[
           {
             required: true,
-            message: 'Please input Priority',
+            message: 'Please input Notes',
           },
         ]}
       >
@@ -145,4 +107,4 @@ const NewDiagnosticForm = ({id}) => {
   );
 };
 
-export default NewDiagnosticForm;
+export default NewDiagnosticResultForm;

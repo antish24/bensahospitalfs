@@ -150,6 +150,7 @@ const PrescriptionTable = () => {
 
   return (
     <Table
+      size='small'
       columns={columns}
       scroll={{
         x: 1000,

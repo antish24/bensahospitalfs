@@ -10,6 +10,7 @@ import NewDiagnosticForm from '@/components/forms/NewDiagnosticRequest';
 import VitalsTab from '@/components/tabs/VitalsTab';
 import { useParams } from 'next/navigation';
 import NewPhAppointmentForm from '@/components/forms/NewPhAppointment';
+import TreatmentForm from '@/components/forms/TreatmentForm';
 
 const PatientDetailPhysician = () => {
   const{id}=useParams()
@@ -75,11 +76,11 @@ const PatientDetailPhysician = () => {
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
     <div>
-        <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<NewAppointmentForm/>)}}>Treatment</Button>
-        <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Bed Request');setOpenModal (true);setModalContent(<NewPhAppointmentForm/>)}}>Bed Request</Button>
-        <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Diagnostic');setOpenModal (true);setModalContent(<NewDiagnosticForm/>)}}>Diagnostic</Button>
-        <Button style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Prescription');setOpenModal (true);setModalContent(<NewPrescriptionForm/>)}}>Prescription</Button>
-        <Button onClick={() => {setModalContentTitle('Appointment');setOpenModal (true);setModalContent(<NewPhAppointmentForm id={PId}/>)}}>Set Appointment</Button></div>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<TreatmentForm id={PId}/>)}}>Treatment</Button>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Bed Request');setOpenModal (true);setModalContent(<NewPhAppointmentForm/>)}}>Bed Request</Button>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Diagnostic');setOpenModal (true);setModalContent(<NewDiagnosticForm id={PId}/>)}}>Diagnostic</Button>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Prescription');setOpenModal (true);setModalContent(<NewPrescriptionForm id={PId}/>)}}>Prescription</Button>
+        <Button disabled={!PId} onClick={() => {setModalContentTitle('Appointment');setOpenModal (true);setModalContent(<NewPhAppointmentForm id={PId}/>)}}>Set Appointment</Button></div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>
 {Object.keys(patientData).length > 0 ? (

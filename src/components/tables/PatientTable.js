@@ -200,6 +200,7 @@ const PatientTable = () => {
     <Button loading={loading} onClick={getPatientsData}>Reload</Button>
     <Table
       columns={columns}
+      size='small'
       scroll={{
         x: 2000,
       }}

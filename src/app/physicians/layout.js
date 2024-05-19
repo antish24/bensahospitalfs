@@ -1,14 +1,17 @@
 'use client';
 import SideTopNav from '../../components/sidetopnav/sidetopnav';
-import React from 'react';
+import React, { useState } from 'react';
 import { LuLayoutDashboard } from "react-icons/lu";
 import {FaBedPulse, FaRegCalendarCheck} from "react-icons/fa6";
 import {PiNotepad } from "react-icons/pi";
 import {BsPersonRolodex} from "react-icons/bs";
 import {GiTestTubes} from "react-icons/gi";
+import IsAuth from '@/helper/IsAuth';
 
 const PhysiciansLayout = ({children}) => {
-    const Links = [
+  const [loading,setLoading]=useState(false);
+
+  const Links = [
         {key: 1, href: "/physicians", icon: <LuLayoutDashboard />, label: "Dashboard" },
         {key: 2,href: "/physicians/patient",icon: <BsPersonRolodex />,label: "Patient",},
         {key: 3, href: "/physicians/appointment", icon: <FaRegCalendarCheck />, label: "Appointment" },
@@ -19,7 +22,9 @@ const PhysiciansLayout = ({children}) => {
 
   return (
     <div>
-      <SideTopNav content={children} links={Links} footer={"Physician Dashboard"}/>
+      <IsAuth path={'physicians'} setLoading={(e)=>setLoading(e)}/>
+      {loading?null:
+      <SideTopNav content={children} links={Links} footer={"Physician Dashboard"}/>}
     </div>
   );
 };

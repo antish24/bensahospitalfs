@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { Layout, theme, Dropdown, Button, Input} from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 import logo from '../../../public/imgs/logo.jpg'
@@ -7,6 +8,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IoNotificationsCircle, IoSettingsOutline} from 'react-icons/io5'
 import ModalForm from '../modal/Modal';
+import ProfileForm from '../forms/ProfileForm';
+import ChangePasswordForm from '../forms/ChangePasswordForm';
+import axios from 'axios';
 
 const SideTopNav = ({content,links,footer}) => {
   const {
@@ -14,19 +18,40 @@ const SideTopNav = ({content,links,footer}) => {
   } = theme.useToken();
   const pathName = usePathname();
   const [openValue, setOpenValue] = useState(false);
+  const [openTitle, setTitle] = useState(false);
+  const [openContent, setOpenContent] = useState();
   const [hoverLink,setHoverLink]=useState()
+
+  const [userName,setUserName]=useState('')
+  const [loading,setLoading]=useState(false)
+
+  const getuserData = async () => {
+    setLoading (true);
+    try {
+      const res = await axios.get (`/api/auth/detail/${localStorage.getItem ('BHPFMS_IdNo')}`);
+      setLoading (false);
+      setUserName(res.data.user.fullName);
+    } catch (error) {
+      setLoading (false);
+      console.log (error);
+    }
+  };
+
+  useEffect(()=>{
+    getuserData()
+  },[])
 
   const items = [
     {
       key: '1',
       label: (
-        <span onClick={()=>setOpenValue(true)}>Profile</span>
+        <pre onClick={()=>{setOpenValue(true);setOpenContent(<ProfileForm/>);setTitle('Profile')}}>Profile        </pre>
       ),
     },
     {
       key: '2',
       label: (
-        <span>Change Password</span>
+        <span onClick={()=>{setOpenValue(true);setOpenContent(<ChangePasswordForm/>);setTitle('Change Password')}}>Change Password</span>
       ),
     },
     {
@@ -37,24 +62,9 @@ const SideTopNav = ({content,links,footer}) => {
     },
   ];
 
-  const profileForm=()=>{
-    return(
-      <div>
-        <Input value={'full name'}/>
-        <Input placeholder='mmm' value={'full name'}/>
-        <Input value={'full name'}/>
-        <Input value={'full name'}/>
-        <Input value={'full name'}/>
-        <Input value={'full name'}/>
-        <Input value={'full name'}/>
-        <Input value={'full name'}/>
-        <Input value={'full name'}/>
-      </div>
-    )
-  }
   return (
     <Layout style={{height:'100vh'}}>
-      <ModalForm open={openValue} close={()=>setOpenValue(false)} content={profileForm} title={'Profile'} func={()=>setOpenValue(c=>!c)}/>
+      <ModalForm open={openValue} close={()=>setOpenValue(false)} content={openContent} title={openTitle} func={()=>setOpenValue(c=>!c)}/>
       <Sider
         breakpoint="md"
         collapsedWidth="0"
@@ -67,7 +77,7 @@ const SideTopNav = ({content,links,footer}) => {
       >
         <div style={{width:'100%',height:'100px',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:'10px'}}>
         <Image src={logo} width={50} style={{borderRadius:'50%'}} height={50} alt='user'/>
-        <span style={{color:'white',fontWeight:'bold'}}>Dr Abebe Balcha</span>
+        <span style={{color:'white',fontWeight:'bold'}}>{loading?'loading':userName}</span>
         </div>
         <div style={{flexDirection:'column',display:'flex',alignItems:'center',gap:'10px'}}>
         {links.map((d)=><Link onMouseEnter={()=>setHoverLink(d.href)} style={{color:pathName===d.href||hoverLink===d.href||pathName.startsWith(d.href)?"white":'rgb(200,200,200)',display:'flex',alignItems:'center',gap:'5px',width:'90%',height:'35px',background:pathName===d.href?'rgb(0,140,255)':'none',padding:'0 10px',borderRadius:'5px'}} href={d.href} key={d.key}>{d.icon} {d.label}</Link>)}

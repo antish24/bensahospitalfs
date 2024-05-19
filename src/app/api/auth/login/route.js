@@ -25,11 +25,14 @@ export const POST = async (request) => {
       return new NextResponse(JSON.stringify({message:"Invalid Password"}),{status:403})
     }
 
+    const IdNo=user.IdNo
+
     const token=jwt.sign({ userId: user._id },SECRETKEY,{expiresIn:expiresIn})
     user.token=token
     await user.save();
 
-    return new NextResponse(JSON.stringify({token,role}), { status: 200 });
+
+    return new NextResponse(JSON.stringify({token,role,IdNo}), { status: 200 });
   } catch (err) {
     console.log(err)
     return new NextResponse(JSON.stringify({ message: "Database Error" }), { status: 500 });

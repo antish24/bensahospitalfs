@@ -1,21 +1,25 @@
 import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
-import Appointment from '@/backend/model/Appointment';
+import env from '@/backend/config/env';
+import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import Patient from '@/backend/model/Patient';
+import AssignDoc from '@/backend/model/AssignDoc';
 
 export const GET = async (request, { params }) => {
   const {id}=params
   try {
     await connect ();
 
-    const appointment = await Appointment.find({physician:id}).populate('patientId', 'IdNo fullName sex dateOfBirth').sort({_id:-1});
+    const patient = await AssignDoc.find({physician:id}).populate('patientId', 'IdNo fullName sex dateOfBirth').sort({_id:-1});
 
-    const appointments= appointment.map(doc => {
+    const patients= patient.map(doc => {
       return {
         fullName: doc.patientId.fullName,
+        sex: doc.patientId.sex, 
         IdNo: doc.patientId.IdNo,
-        priority: doc.priority,
-        appointmentDate: doc.appointmentDate,
-        description: doc.description,
+        dateOfBirth: doc.patientId.dateOfBirth,
+        priorty: doc.priorty,
         department: doc.department,
         physician: doc.physician,
         createdAt: doc.createdAt,
@@ -24,7 +28,7 @@ export const GET = async (request, { params }) => {
     });
 
     return new NextResponse (
-      JSON.stringify ({appointments}),
+      JSON.stringify ({patients}),
       {status: 200}
     );
   } catch (err) {

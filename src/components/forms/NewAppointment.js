@@ -1,6 +1,6 @@
 'use client'
 import { AlertContext } from '@/context/AlertContext'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, DatePicker, Form, Input, Select, TimePicker } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useState } from 'react'
@@ -12,6 +12,7 @@ const NewAppointmentForm = ({id}) => {
   const navigate=useRouter()
   const [loading,setLoading]=useState(false)
   const [nameloading,setnameLoading]=useState(false)
+  const { Option } = Select;
 
   const departmentOption=DepartmentList.map(d => ({
     value: d.name, 
@@ -59,6 +60,8 @@ const NewAppointmentForm = ({id}) => {
         physician:values.physician,
         priority:values.priority,
         appointmentDate:values.appointmentDate,
+        duration:values.duration,
+        startTime:values.startTime,
         description:values.description,
       })
       setLoading(false)
@@ -101,8 +104,8 @@ const NewAppointmentForm = ({id}) => {
     options={departmentOption}
   />
     </Form.Item>
-
-    <Form.Item style={{margin:'5px'}}
+    <div style={{display:'flex',justifyContent:'space-between'}}>
+    <Form.Item style={{margin:'5px',width:'48%'}}
         label="Physician"
         rules={[
           {
@@ -124,7 +127,6 @@ const NewAppointmentForm = ({id}) => {
     options={physicainNameOptions}
   />
     </Form.Item>
-<div style={{display:'flex',justifyContent:'space-between'}}>
       <Form.Item style={{margin:'5px',width:'48%'}}
         label="Priority"
         name="priority"
@@ -152,7 +154,9 @@ const NewAppointmentForm = ({id}) => {
         /> 
       </Form.Item>
 
-      <Form.Item style={{margin:'5px',width:'48%'}}
+      </div>
+<div style={{display:'flex',justifyContent:'space-between'}}>
+      <Form.Item style={{margin:'5px'}}
         label="Appointment Date"
         rules={[
           {
@@ -162,8 +166,34 @@ const NewAppointmentForm = ({id}) => {
         ]}
         name="appointmentDate"    
       >
-        <Input  type='date'/>
+        <DatePicker/>
       </Form.Item>
+      <Form.Item 
+        label="Start Time"
+  name='startTime'
+  rules={[
+    {
+      required: true,
+      message: 'Please select start time'
+    }
+  ]}
+>
+  <TimePicker /> 
+</Form.Item>
+
+<Form.Item
+  label="Duration"
+  name='duration'  
+  rules={[
+    {
+      required: true,
+      message: 'Please select Duration'
+    },
+  ]}
+>
+  <TimePicker />
+</Form.Item>
+     
       </div>
       <Form.Item style={{margin:'5px'}}
         label="Description"

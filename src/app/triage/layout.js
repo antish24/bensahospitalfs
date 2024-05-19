@@ -1,16 +1,14 @@
 'use client';
 import SideTopNav from '../../components/sidetopnav/sidetopnav';
-import React, {useEffect} from 'react';
+import React, { useState } from 'react';
 import {LuLayoutDashboard} from 'react-icons/lu';
 import {FaRegCalendarCheck} from 'react-icons/fa6';
 import {BsPersonRolodex} from 'react-icons/bs';
-import { useRouter } from 'next/navigation';
+import IsAuth from '@/helper/IsAuth';
+import { Button } from 'antd';
 
 const TriageLayout = ({children}) => {
-  const navigate=useRouter()
-  // useEffect (() => {
-  //   if(localStorage.getItem("BHPFMS_Role")!=='triage')navigate.replace(`/${localStorage.getItem("BHPFMS_Role")}`)
-  // }, []);
+  const [loading,setLoading]=useState(false);
 
   const Links = [
     {key: 1, href: '/triage', icon: <LuLayoutDashboard />, label: 'Dashboard'},
@@ -30,11 +28,12 @@ const TriageLayout = ({children}) => {
 
   return (
     <div>
-      <SideTopNav
+      <IsAuth path={'triage'} setLoading={(e)=>setLoading(e)}/>
+      {loading?<div style={{display:'flex',alignItems:'center',justifyContent:'center',width:'100vw',height:'100vh'}}><Button loading={true} type='primary'></Button></div>:<SideTopNav
         content={children}
         links={Links}
         footer={'Triage Dashboard'}
-      />
+      />}
     </div>
   );
 };
