@@ -1,10 +1,14 @@
 'use client';
-import React, { useRef, useState } from 'react';
-import {Button, Input, Space, Table} from 'antd';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import {Button, Input, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { FaUpDown } from 'react-icons/fa6';
+import { FaEye, FaPen } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
+import { AlertContext } from '@/context/AlertContext';
+import axios from 'axios';
+import { formatTime } from '@/helper/FormatTime';
+import { FormatDay } from '@/helper/FormateDay';
 
 const AppointmentTable = () => {
 
@@ -88,30 +92,18 @@ const AppointmentTable = () => {
 
   const columns = [
     {
-      title: '',
-      dataIndex: 'key',
-      fixed: 'left',
-      rowScope: 'row',
-      width:'50px'
-    },
-    {
       title: 'ID No',
       fixed: 'left',
-      dataIndex: 'id',
+      dataIndex: 'IdNo',
       width:'100px',
-      ...getColumnSearchProps('id'),
+      ...getColumnSearchProps('IdNo'),
     },
         {
           title: 'Full Name',
-          dataIndex: 'fullname',
-          ...getColumnSearchProps('fullname'),
-          key: 'fullname',
-          width:"300px"
-        },
-        {
-          title: 'Department',
-          dataIndex: 'department',
-          key: 'department',
+          dataIndex: 'fullName',
+          ...getColumnSearchProps('fullName'),
+          key: 'fullName',
+          width:"250px"
         },
         {
           title: 'Physician',
@@ -119,15 +111,26 @@ const AppointmentTable = () => {
           key: 'physician',
         },
     {
-      title: 'Appointment Date',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render:r=>(<span>{FormatDateTime(r)}</span>)
-
+      title: 'Date',
+      dataIndex: 'appointmentDate',
+      key: 'appointmentDate',
+      render:r=>(<span>{FormatDay(r)}</span>)
+    },
+    {
+      title: 'Start Time',
+      dataIndex: 'startTime',
+      render:r=>(<span>{formatTime(r)}</span>),
+      key: 'startTime',
+    },
+    {
+      title: 'Duration',
+      dataIndex: 'duration',
+      key: 'duration',
     },
     {
       title: 'Priority',
       dataIndex: 'priority',
+      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
       width:'100px',
     },
     {
@@ -136,42 +139,73 @@ const AppointmentTable = () => {
       key: 'description',
     },
     {
+      title: 'By',
+      dataIndex: 'appointmentBy',
+      key: 'appointmentBy',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      width:'100px',
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+    },
+    {
      title: 'Action',
-     width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`patient/${r.id}`)}><FaUpDown/></Button>,
+     render: (r) => <Space>
+      <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>
+       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaPen/></Button>
+       </Space>,
     },
   ];
 
-  const data = [];
-  for (let i = 0; i < 17; ++i) {
-    data.push ({
-      key: i.toString (),
-      id: `FT0${i}4892`,
-      fullname: 'firstname middelname lastname',
-      department: 'Ortgonist',
-      physician: 'Dr Abel Girma',
-      createdAt: '20/08/24',
-      priority: '2',
-      description: 'Teeth check up',
-      createdAt: '2014-12-24 23:12:00',
-    });
+  const [appointmentData,setAppointmentData]=useState([])
+  const [loading,setLoading]=useState(false)
+  const {openNotification} = useContext (AlertContext);
+
+  const getAppointmentList=async()=>{
+    setLoading(true)
+    try {
+      const res = await axios.get (`/api/appointment/get`);
+      setLoading (false);
+      console.log(res.data.appointments)
+      setAppointmentData(res.data.appointments)
+    } catch (error) {
+      setLoading (false);
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
   }
 
+  useEffect(()=>{
+    getAppointmentList()
+  },[])
+
   return (
-    <Table
+    <div>
+      <Button loading={loading} onClick={getAppointmentList} disabled={loading} style={{marginBottom:'10px'}}>Reload</Button>
+      <Table
       size='small'
       columns={columns}
+      loading={loading}
       scroll={{
-        x: 1000,
+        x: 1500,
       }}
       pagination={{
         defaultPageSize: 7,
         showSizeChanger: false 
       }}
-      dataSource={data}
+      dataSource={appointmentData}
     />
+    </div>
   );
 };
 export default AppointmentTable;

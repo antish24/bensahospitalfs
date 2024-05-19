@@ -1,6 +1,6 @@
 'use client';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {Badge, Button, Input, Space, Table} from 'antd';
+import {Badge, Button, Input, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { FaEye } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
@@ -91,13 +91,6 @@ const AssignedPatientTable = () => {
 
   const columns = [
     {
-      title: '',
-      dataIndex: 'key',
-      fixed: 'left',
-      rowScope: 'row',
-      width:'50px'
-    },
-    {
       title: 'ID No',
       fixed: 'left',
       dataIndex: 'IdNo',
@@ -132,6 +125,7 @@ const AssignedPatientTable = () => {
     {
       title: 'Priorty',
       dataIndex: 'priorty',
+      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
       key: 'priorty',
     },
     {
@@ -140,6 +134,12 @@ const AssignedPatientTable = () => {
       key: 'createdAt',
       render:r=>(<span>{FormatDateTime(r)}</span>)
 
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      width:'100px',
     },
     {
      title: 'Action',

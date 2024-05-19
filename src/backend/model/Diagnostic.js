@@ -18,7 +18,7 @@ const DiagnosticSchema = new Schema ({
   reason: {type: String, required: true},
   priority: {type: String, required: true},
   instructions: {type: String, required: true},
-  
+  status: {type: String, required: true,default:"Pending"},
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: null},
 });

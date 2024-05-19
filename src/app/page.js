@@ -6,6 +6,7 @@ import styles from './page.module.css'
 import Link from 'next/link'
 import axios from 'axios'
 import { AlertContext } from '@/context/AlertContext'
+import IsAuth from '@/helper/IsAuth'
 
 const Landing = () => {
   const {openNotification}=useContext(AlertContext)
@@ -15,13 +16,12 @@ const Landing = () => {
     setLoading(true)
     try {
       const res=await axios.post(`/api/auth/login`,{email:values.email,password:values.password,role:values.role})
-      setLoading(false)
       localStorage.setItem('BHPFMS_Token',res.data.token)
       localStorage.setItem('BHPFMS_IdNo',res.data.IdNo)
       localStorage.setItem('BHPFMS_Role',res.data.role)
       navigate.replace(values.role)
       openNotification('succes','Login Successfully',3,'green');
-
+      setLoading(false)
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');
       setLoading(false)
@@ -32,6 +32,7 @@ const Landing = () => {
   };
   return (
     <div className={styles.box}>
+      <IsAuth path={'/'} setLoading={()=>console.log('loading')}/>
       <div className={styles.loginform2}></div>
       <div className={styles.loginform}>
       <Tooltip placement="top" title={'Bensa Hospital Patient File Management System'}>

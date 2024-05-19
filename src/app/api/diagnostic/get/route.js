@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import Diagnostic from '@/backend/model/Diagnostic';
+import Patient from '@/backend/model/Patient';
 
 export const GET = async (request) => {
   try {

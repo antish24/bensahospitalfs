@@ -48,7 +48,7 @@ const handleCityChange = (value) => {
       })
       setLoading(false)
       modalOpen()
-      openNotification('error',res.data.message,3,'green');
+      openNotification('sucess',res.data.message,3,'green');
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');
       setLoading(false)

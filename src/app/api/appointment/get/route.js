@@ -1,21 +1,18 @@
 import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import Appointment from '@/backend/model/Appointment';
-import User from '@/backend/model/User';
 
-export const GET = async (request, { params }) => {
-  const {id}=params
+export const GET = async (request) => {
   try {
     await connect ();
 
-    let user=await User.findOne({IdNo:id})
-
-    const appointment = await Appointment.find({physicianId:user._id}).populate('appointmentBy', 'IdNo').populate('patientId', 'IdNo fullName').sort({_id:-1});
+    const appointment = await Appointment.find().populate('physicianId', 'IdNo').populate('appointmentBy', 'IdNo').populate('patientId', 'IdNo fullName').sort({_id:-1});
 
     const appointments= appointment.map(doc => {
       return {
         fullName: doc.patientId.fullName,
         IdNo: doc.patientId.IdNo,
+        physician: doc.physicianId.IdNo,
         appointmentBy: doc.appointmentBy.IdNo,
         priority: doc.priority,
         appointmentDate: doc.appointmentDate,

@@ -1,16 +1,13 @@
 'use client';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import {Badge, Button, Input, Space, Table} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { FaEye } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
-import axios from 'axios';
-import { AlertContext } from '@/context/AlertContext';
 import { FormatDateTime } from '@/helper/FormatDate';
 
-const UserTable = () => {
+const UserTable = ({userData,loading}) => {
 
-  const {openNotification} = useContext(AlertContext);
   const [searchedColumn, setSearchedColumn] = useState('');
   const navigate=useRouter()
   const [searchText, setSearchText] = useState('');
@@ -91,13 +88,6 @@ const UserTable = () => {
 
   const columns = [
     {
-      title: '',
-      dataIndex: 'key',
-      fixed: 'left',
-      rowScope: 'row',
-      width:'50px'
-    },
-    {
       title: 'ID No',
       fixed: 'left',
       dataIndex: 'IdNo',
@@ -121,13 +111,6 @@ const UserTable = () => {
           key: 'sex',
           width:'100px'
         },
-        // {
-        //   title: 'Date Of Birth',
-        //   dataIndex: 'dateofBirth',
-        //   key: 'dateofBirth',
-        //   render:r=>(<span>{FormatDateTime(r)}</span>)
-
-        // },
       ],
     },
     {
@@ -136,6 +119,7 @@ const UserTable = () => {
         {
           title: 'Role',
           dataIndex: 'role',
+          ...getColumnSearchProps('role'),
           key: 'role',
         },
         {
@@ -159,7 +143,8 @@ const UserTable = () => {
 
     },
     {
-      title: 'Status',
+     fixed: 'right',
+     title: 'Status',
       key: 'status',
       render: (r) => <Badge status={r.status==="Active"?"success":'error'} text={r.status} />,
     },
@@ -172,32 +157,13 @@ const UserTable = () => {
     },
   ];
 
-  const [userData,setUserData]=useState([])
-  const [loading,setLoading]=useState(false)
-
-  const getUserData=async()=>{
-    setLoading(true)
-    try {
-      const res = await axios.get (`/api/admin/getusers`);
-      setLoading (false);
-      console.log(res.data)
-      setUserData(res.data.users)
-    } catch (error) {
-      openNotification('error', error.response.data.message, 3, 'red');
-      setLoading (false);
-    }
-  }
-
-  useEffect(()=>{
-    getUserData()
-  },[])
 
   return (
     <Table
       size='small'
       columns={columns}
       scroll={{
-        x: 2000,
+        x: 1500,
       }}
       pagination={{
         defaultPageSize: 7,

@@ -137,6 +137,12 @@ const DiagonsticTable = () => {
       render:r=>(<span>{FormatDateTime(r)}</span>)
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      width:'100px',
+    },
+    {
      title: 'Action',
      width:'80px',
      fixed: 'right',

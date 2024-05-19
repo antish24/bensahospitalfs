@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const VitalsSchema = new Schema({
   patientId:{type: String,required: true },
-  // physicianId:{type: String,required: true },
+  triageId:{type: String,required: true },
   // patientId:{type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
   complaint: { type: String ,required:true},
   symptoms: { type: String,required:true},

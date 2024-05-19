@@ -2,8 +2,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {Badge, Button, Descriptions, Form, Input, Select, Tabs} from 'antd';
 import ModalForm from '@/components/modal/Modal';
-import NewAppointmentForm from '@/components/forms/NewAppointment';
-import { AlertContext } from '@/context/AlertContext';
 import axios from 'axios';
 import NewPrescriptionForm from '@/components/forms/NewPrescriptionForm';
 import NewDiagnosticForm from '@/components/forms/NewDiagnosticRequest';
@@ -11,6 +9,8 @@ import VitalsTab from '@/components/tabs/VitalsTab';
 import { useParams } from 'next/navigation';
 import NewPhAppointmentForm from '@/components/forms/NewPhAppointment';
 import TreatmentForm from '@/components/forms/TreatmentForm';
+import LabResult from '@/components/tabs/LabResult';
+import TreatmentTab from '@/components/tabs/TreatmentTab';
 
 const PatientDetailPhysician = () => {
   const{id}=useParams()
@@ -41,7 +41,7 @@ const PatientDetailPhysician = () => {
     {
       key: '3',
       label: 'Treament',
-      children: 'Content of Tab Pane 3',
+      children: <TreatmentTab id={id}/>,
     },
     {
       key: '4',
@@ -51,7 +51,7 @@ const PatientDetailPhysician = () => {
     {
       key: '5',
       label: 'Lab and test results',
-      children: 'Content of Tab Pane 5',
+      children: <LabResult id={PId}/>,
     },
     {
       key: '6',
@@ -76,7 +76,7 @@ const PatientDetailPhysician = () => {
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
     <div>
-        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<TreatmentForm id={PId}/>)}}>Treatment</Button>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<TreatmentForm id={id}/>)}}>Treatment</Button>
         <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Bed Request');setOpenModal (true);setModalContent(<NewPhAppointmentForm/>)}}>Bed Request</Button>
         <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Diagnostic');setOpenModal (true);setModalContent(<NewDiagnosticForm id={PId}/>)}}>Diagnostic</Button>
         <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Prescription');setOpenModal (true);setModalContent(<NewPrescriptionForm id={PId}/>)}}>Prescription</Button>

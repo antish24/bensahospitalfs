@@ -5,22 +5,20 @@ import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import { FaEye } from 'react-icons/fa6';
 import ModalForm from '../modal/Modal';
-import VitalsInfo from '../description/VitalsInfo';
+import TreatmentInfo from '../description/TreatmentInfo';
 
-const VitalsTab = ({id}) => {
-  const [patinetVitals, setPatientVitals] = useState ([]);
+const TreatmentTab = ({id}) => {
+  const [patinetTreatment, setPatientTreatment] = useState ([]);
   const [loading, setLoading] = useState (false);
 
   const getPatientVitals = async () => {
     setLoading (true);
     try {
-      const res = await axios.get (`/api/patient/getvitals/${id}`);
+      const res = await axios.get (`/api/treatment/get/${id}`);
       setLoading (false);
-      console.log (res.data);
-      setPatientVitals (res.data.vitals);
+      setPatientTreatment (res.data.results);
     } catch (error) {
-      console.log (error);
-      // openNotification('error', error.response.data.message, 3, 'red');
+      openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);
     }
   };
@@ -34,10 +32,10 @@ const VitalsTab = ({id}) => {
 
   const columns = [
     {
-      title: 'Severity',
-      dataIndex: 'symptomSeverity',
-      key: 'symptomSeverity',
-      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
+      title: 'Visit Type',
+      dataIndex: 'visitType',
+      key: 'visitType',
+      render:r=>(<Tag color={r==='New'?'green':'orange'}>{r}</Tag>),
       width:'100px'
     },
     {
@@ -46,25 +44,10 @@ const VitalsTab = ({id}) => {
       key: 'complaint',
       width:'200px'
     },
-    // {
-    //   title: 'Symptoms',
-    //   dataIndex: 'symptoms',
-    //   key: 'symptoms',
-    // },
-    // {
-    //   title: 'Medical History',
-    //   dataIndex: 'medicalHistory',
-    //   key: 'medicalHistory',
-    // },
-    // {
-    //   title: 'Vitals Signs',
-    //   dataIndex: 'vitalsSigns',
-    //   key: 'vitalsSigns',
-    // },
     {
       title: 'By',
-      dataIndex: 'triageId',
-      key: 'triageId',
+      dataIndex: 'physicianId',
+      key: 'physicianId',
     },
     {
       title: 'Date',
@@ -85,7 +68,7 @@ const VitalsTab = ({id}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() =>{setModalContentTitle('Vitals Info');setOpenModal (true);setModalContent(<VitalsInfo data={r}/>)}}
+          onClick={() =>{setModalContentTitle('Treatment Info');setOpenModal (true);setModalContent(<TreatmentInfo data={r}/>)}}
         >
           <FaEye/>
         </Button>
@@ -113,11 +96,11 @@ const VitalsTab = ({id}) => {
           defaultPageSize: 7,
           showSizeChanger: false,
         }}
-        dataSource={patinetVitals}
+        dataSource={patinetTreatment}
         loading={loading}
       />
     </div>
   );
 };
 
-export default VitalsTab;
+export default TreatmentTab;

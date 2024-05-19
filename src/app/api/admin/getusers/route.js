@@ -127,7 +127,7 @@ export const GET = async request => {
   try {
     await connect ();
 
-    const users = await User.find();
+    const users = await User.find().sort({_id:-1});
     return new NextResponse (
       JSON.stringify ({users}),
       {status: 200}

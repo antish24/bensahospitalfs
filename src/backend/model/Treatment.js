@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
-
+import User from './User';
 const {Schema} = mongoose;
 
 const TreatmentSchema = new Schema ({
-  patientId: {
+   physicianId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Patient',
+    ref: 'User',
     required: true,
   },
-  physicianId:{type: String,required: true },
+  patientId:{type: String,required: true },
 
   visitType: {type: String, required: true},
   complaint: {type: String, required: true},

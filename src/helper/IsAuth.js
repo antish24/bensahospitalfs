@@ -12,7 +12,6 @@ const IsAuth = ({path,setLoading}) => {
 
   const isAuth = async () => {
     setLoading (true);
-    console.log("isauth")
     try {
       await axios.post (`/api/auth`, {
         token: localStorage.getItem ('BHPFMS_Token'),
@@ -29,10 +28,10 @@ const IsAuth = ({path,setLoading}) => {
 
   useEffect (
     () => {
-      if (localStorage.getItem ('BHPFMS_Role') !== path) navigate.replace (`/${localStorage.getItem ('BHPFMS_Role')}`);
+      if (localStorage.getItem ('BHPFMS_Role') !== path) navigate.replace(`/${localStorage.getItem ('BHPFMS_Role')!==''?localStorage.getItem ('BHPFMS_Role'):'/'}`);
       isAuth ();
     },
-    [navigate,pathName]
+    [navigate,path]
   );
 
   //   return (

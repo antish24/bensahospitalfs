@@ -17,8 +17,8 @@ const NewPhAppointmentForm = ({id}) => {
     try {
       const res = await axios.post (`/api/appointment/new`, {
         patientId: id,
-        department: '',
         physician:localStorage.getItem ('BHPFMS_IdNo'),
+        appointmentBy:localStorage.getItem ('BHPFMS_IdNo'),
         priority: values.priority,
         appointmentDate: values.appointmentDate,
         startTime:values.startTime,
@@ -108,7 +108,7 @@ const NewPhAppointmentForm = ({id}) => {
         </Form.Item>
 
         <Form.Item
-          label="Duration"
+          label="Duration (in Minute)"
           style={{margin: '5px', width: '48%'}}
           name="duration"
           rules={[
@@ -118,7 +118,7 @@ const NewPhAppointmentForm = ({id}) => {
             },
           ]}
         >
-          <TimePicker style={{width:'100%'}}/>
+          <Input type='number' max={1000} style={{width:'100%'}}/>
         </Form.Item>
       </div>
 

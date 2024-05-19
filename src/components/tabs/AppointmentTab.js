@@ -5,19 +5,20 @@ import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import { FaEye } from 'react-icons/fa6';
 import ModalForm from '../modal/Modal';
-import VitalsInfo from '../description/VitalsInfo';
+import { FormatDay } from '@/helper/FormateDay';
+import AppointmentInfo from '../description/AppointmentInfo';
 
-const VitalsTab = ({id}) => {
-  const [patinetVitals, setPatientVitals] = useState ([]);
+const AppointmentTab = ({id}) => {
+  const [patinetAppointments, setPatientAppointments] = useState ([]);
   const [loading, setLoading] = useState (false);
 
-  const getPatientVitals = async () => {
+  const getPatientAppointments = async () => {
     setLoading (true);
     try {
-      const res = await axios.get (`/api/patient/getvitals/${id}`);
+      const res = await axios.get (`/api/appointment/get/patient/${id}`);
       setLoading (false);
       console.log (res.data);
-      setPatientVitals (res.data.vitals);
+      setPatientAppointments(res.data.appointments);
     } catch (error) {
       console.log (error);
       // openNotification('error', error.response.data.message, 3, 'red');
@@ -25,7 +26,7 @@ const VitalsTab = ({id}) => {
     }
   };
   useEffect (() => {
-    getPatientVitals ();
+    getPatientAppointments ();
   }, []);
 
   const [openModal, setOpenModal] = useState(false);
@@ -34,40 +35,31 @@ const VitalsTab = ({id}) => {
 
   const columns = [
     {
-      title: 'Severity',
-      dataIndex: 'symptomSeverity',
-      key: 'symptomSeverity',
-      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
-      width:'100px'
-    },
-    {
-      title: 'Complaint',
-      dataIndex: 'complaint',
-      key: 'complaint',
-      width:'200px'
-    },
-    // {
-    //   title: 'Symptoms',
-    //   dataIndex: 'symptoms',
-    //   key: 'symptoms',
-    // },
-    // {
-    //   title: 'Medical History',
-    //   dataIndex: 'medicalHistory',
-    //   key: 'medicalHistory',
-    // },
-    // {
-    //   title: 'Vitals Signs',
-    //   dataIndex: 'vitalsSigns',
-    //   key: 'vitalsSigns',
-    // },
-    {
-      title: 'By',
-      dataIndex: 'triageId',
-      key: 'triageId',
-    },
-    {
       title: 'Date',
+      dataIndex: 'appointmentDate',
+      key: 'appointmentDate',
+      render:r=>(<span>{FormatDay(r)}</span>)
+    },
+    {
+      title: 'Start Time',
+      dataIndex: 'startTime',
+      key: 'startTime',
+    },
+    {
+      title: 'Priority',
+      dataIndex: 'priority',
+      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
+      key: 'priority',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      fixed: 'right',
+      width:'100px',
+    },
+    {
+      title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render:r=>(<span>{FormatDateTime(r)}</span>)
@@ -85,7 +77,7 @@ const VitalsTab = ({id}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() =>{setModalContentTitle('Vitals Info');setOpenModal (true);setModalContent(<VitalsInfo data={r}/>)}}
+          onClick={() =>{setModalContentTitle('Appointments Info');setOpenModal (true);setModalContent(<AppointmentInfo data={r}/>)}}
         >
           <FaEye/>
         </Button>
@@ -102,22 +94,19 @@ const VitalsTab = ({id}) => {
       title={modalContentTitle}
       content={modalContent}
     />
-      <Button onClick={getPatientVitals} loading={loading}>Reload</Button>
+      <Button onClick={getPatientAppointments} loading={loading}>Reload</Button>
       <Table
       size='small'
         columns={columns}
-        // scroll={{
-        //   x: 1500,
-        // }}
         pagination={{
           defaultPageSize: 7,
           showSizeChanger: false,
         }}
-        dataSource={patinetVitals}
+        dataSource={patinetAppointments}
         loading={loading}
       />
     </div>
   );
 };
 
-export default VitalsTab;
+export default AppointmentTab;

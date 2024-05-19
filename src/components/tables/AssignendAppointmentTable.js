@@ -1,12 +1,14 @@
 'use client';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {Button, Input, Space, Table} from 'antd';
+import {Button, Input, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { FaEye } from 'react-icons/fa6';
+import { FaEye, FaPen } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
+import { formatTime } from '@/helper/FormatTime';
+import { FormatDay } from '@/helper/FormateDay';
 
 const AssignedAppointmentTable = () => {
 
@@ -90,13 +92,6 @@ const AssignedAppointmentTable = () => {
 
   const columns = [
     {
-      title: '',
-      dataIndex: 'index',
-      fixed: 'left',
-      rowScope: 'row',
-      width:'50px'
-    },
-    {
       title: 'ID No',
       fixed: 'left',
       dataIndex: 'IdNo',
@@ -111,15 +106,26 @@ const AssignedAppointmentTable = () => {
           width:"300px"
         },
     {
-      title: 'Appointment Date',
+      title: 'Date',
       dataIndex: 'appointmentDate',
       key: 'appointmentDate',
-      render:r=>(<span>{FormatDateTime(r)}</span>)
-
+      render:r=>(<span>{FormatDay(r)}</span>)
+    },
+    {
+      title: 'Start Time',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      render:r=>(<span>{formatTime(r)}</span>)
+    },
+    {
+      title: 'Duration',
+      dataIndex: 'duration',
+      key: 'duration',
     },
     {
       title: 'Priority',
       dataIndex: 'priority',
+      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
       width:'100px',
     },
     {
@@ -128,11 +134,33 @@ const AssignedAppointmentTable = () => {
       key: 'description',
     },
     {
+      title: 'By',
+      dataIndex: 'appointmentBy',
+      key: 'appointmentBy',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      fixed: 'right',
+      width:'100px',
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
+    },
+    {
      title: 'Action',
-     width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`/physicians/patient/${r.IdNo}`)}><FaEye/></Button>,
+     render: (r) => <Space>
+      <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>
+       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaPen/></Button>
+       </Space>,
     },
   ];
 
@@ -158,12 +186,14 @@ const AssignedAppointmentTable = () => {
   },[])
 
   return (
-    <Table
+    <div>
+      <Button loading={loading} onClick={getAppointmentList} disabled={loading} style={{marginBottom:'10px'}}>Reload</Button>
+      <Table
       columns={columns}
       size='small'
       loading={loading}
       scroll={{
-        x: 1000,
+        x: 1500,
       }}
       pagination={{
         defaultPageSize: 7,
@@ -171,6 +201,7 @@ const AssignedAppointmentTable = () => {
       }}
       dataSource={appointmentData}
     />
+    </div>
   );
 };
 export default AssignedAppointmentTable;

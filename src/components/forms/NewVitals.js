@@ -17,6 +17,7 @@ const NewVitalsForm = ({id}) => {
       const res = await axios.post (`/api/patient/writevitals`, {
         patientId:id,
       complaint:values.complaint,
+      triageId:localStorage.getItem('BHPFMS_IdNo'),
       medicalHistory:values.medicalHistory,
       symptoms:values.symptoms,
       symptomSeverity:values.severity,

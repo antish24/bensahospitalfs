@@ -12,7 +12,6 @@ const NewAppointmentForm = ({id}) => {
   const navigate=useRouter()
   const [loading,setLoading]=useState(false)
   const [nameloading,setnameLoading]=useState(false)
-  const { Option } = Select;
 
   const departmentOption=DepartmentList.map(d => ({
     value: d.name, 
@@ -52,11 +51,10 @@ const NewAppointmentForm = ({id}) => {
 
   const onFinish =async (values) => {
     setLoading(true)
-    console.log(id)
     try {
       const res=await axios.post(`/api/appointment/new`,{
         patientId:id,
-        department:values.department,
+        appointmentBy:localStorage.getItem('BHPFMS_IdNo'),
         physician:values.physician,
         priority:values.priority,
         appointmentDate:values.appointmentDate,
@@ -156,7 +154,7 @@ const NewAppointmentForm = ({id}) => {
 
       </div>
 <div style={{display:'flex',justifyContent:'space-between'}}>
-      <Form.Item style={{margin:'5px'}}
+      <Form.Item
         label="Appointment Date"
         rules={[
           {
@@ -191,7 +189,7 @@ const NewAppointmentForm = ({id}) => {
     },
   ]}
 >
-  <TimePicker />
+  <Input type='number' style={{width:'150px'}}/>
 </Form.Item>
      
       </div>

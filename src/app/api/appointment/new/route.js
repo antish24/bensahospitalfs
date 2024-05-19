@@ -6,8 +6,8 @@ import User from '@/backend/model/User';
 export const POST = async request => {
   const {
     patientId,
-    department,
     physician,
+    appointmentBy,
     priority,
     appointmentDate,
     duration,
@@ -18,16 +18,13 @@ export const POST = async request => {
   try {
     await connect ();
 
-    let dep=department;
-    if(department===''){
-      let user=await User.findOne({IdNo:physician})
-      dep=user.department
-    }
+    let user=await User.findOne({IdNo:physician})
+    let user2=await User.findOne({IdNo:appointmentBy})
 
     const newAppointment = new Appointment ({
       patientId,
-      department:dep,
-      physician,
+      appointmentBy:user2._id,
+      physicianId:user._id,
       priority,
       appointmentDate,
       startTime,

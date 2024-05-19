@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
 import { FormatDateTime } from '@/helper/FormatDate';
+import { FormatDay } from '@/helper/FormateDay';
 
 const PatientTable = () => {
 
@@ -91,13 +92,6 @@ const PatientTable = () => {
 
   const columns = [
     {
-      title: '',
-      dataIndex: 'key',
-      fixed: 'left',
-      rowScope: 'row',
-      width:'50px'
-    },
-    {
       title: 'ID No',
       fixed: 'left',
       dataIndex: 'IdNo',
@@ -124,7 +118,7 @@ const PatientTable = () => {
           title: 'Date Of Birth',
           dataIndex: 'dateOfBirth',
           key: 'dateOfBirth',
-      render:r=>(<span>{FormatDateTime(r)}</span>)
+      render:r=>(<span>{FormatDay(r)}</span>)
           
         },
       ],
@@ -156,7 +150,7 @@ const PatientTable = () => {
         ],
       },
     {
-      title: 'Date',
+      title: 'Created Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render:r=>(<span>{FormatDateTime(r)}</span>)

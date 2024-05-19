@@ -7,6 +7,7 @@ const AssignDocSchema = new Schema({
   priorty: { type: String,required:true },
   department: { type: String,required:true},
   physician: { type: String,required:true},
+  status: {type: String, required: true,default:"Pending"},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: null },
 });

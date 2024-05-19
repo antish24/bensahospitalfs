@@ -10,6 +10,8 @@ import VitalsTab from '@/components/tabs/VitalsTab';
 import AssignDocForm from '@/components/forms/AssignDocFrom';
 import { useParams } from 'next/navigation';
 import City from '@/helper/City.json'
+import LabResult from '@/components/tabs/LabResult';
+import AppointmentTab from '@/components/tabs/AppointmentTab';
 
 const PatientDetail = () => {
  
@@ -62,18 +64,13 @@ const handleCityChange = (value) => {
     },
     {
       key: '3',
-      label: 'Treament',
-      children: 'Content of Tab Pane 3',
+      label: 'Appointments',
+      children: <AppointmentTab id={PId}/>,
     },
     {
       key: '4',
       label: 'Medications',
       children: 'Content of Tab Pane 4',
-    },
-    {
-      key: '5',
-      label: 'Lab and test results',
-      children: 'Content of Tab Pane 5',
     },
     {
       key: '6',

@@ -126,7 +126,7 @@ function getRandomInt (max) {
 export const POST = async request => {
   const {
     patientId,
-    complaint,
+    complaint,triageId,
     medicalHistory,
     symptoms,
     symptomSeverity,
@@ -140,7 +140,7 @@ export const POST = async request => {
     await connect ();
 
     const newVitals = new Vitals ({
-      patientId,
+      patientId,triageId,
       complaint,
       medicalHistory,
       symptoms,

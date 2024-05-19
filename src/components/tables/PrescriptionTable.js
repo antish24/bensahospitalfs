@@ -88,13 +88,6 @@ const PrescriptionTable = () => {
 
   const columns = [
     {
-      title: '',
-      dataIndex: 'key',
-      fixed: 'left',
-      rowScope: 'row',
-      width:'50px'
-    },
-    {
       title: 'ID No',
       fixed: 'left',
       dataIndex: 'id',
