@@ -17,7 +17,7 @@ export const POST = async request => {
 
   try {
     await connect ();
-
+    console.log('patientId',patientId)
     let user=await User.findOne({IdNo:physician})
     let user2=await User.findOne({IdNo:appointmentBy})
 

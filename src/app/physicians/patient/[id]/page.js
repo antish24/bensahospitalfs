@@ -11,6 +11,7 @@ import NewPhAppointmentForm from '@/components/forms/NewPhAppointment';
 import TreatmentForm from '@/components/forms/TreatmentForm';
 import LabResult from '@/components/tabs/LabResult';
 import TreatmentTab from '@/components/tabs/TreatmentTab';
+import PrescriptionTab from '@/components/tabs/PrescriptionTab';
 
 const PatientDetailPhysician = () => {
   const{id}=useParams()
@@ -46,7 +47,7 @@ const PatientDetailPhysician = () => {
     {
       key: '4',
       label: 'Medications',
-      children: 'Content of Tab Pane 4',
+      children: <PrescriptionTab id={PId}/>,
     },
     {
       key: '5',

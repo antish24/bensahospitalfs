@@ -2,14 +2,14 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {Button, Input, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { FaEye, FaPen } from 'react-icons/fa6';
+import { FaCheck, FaDeleteLeft, FaEye, FaPen } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
 import DrawerOpen from '../modal/Drawer';
 
-const PrescriptionTable = () => {
+const PaymentRequestTable = () => {
 
   const [searchedColumn, setSearchedColumn] = useState('');
   const navigate=useRouter()
@@ -107,19 +107,25 @@ const PrescriptionTable = () => {
           width:"300px"
         },
     {
-      title: 'Gender',
-      dataIndex: 'sex',
-      key: 'sex',
+      title: 'Payment For',
+      dataIndex: 'payType',
+      key: 'payType',
     },
     {
-      title: 'Prescribed by',
-      dataIndex: 'physicianId',
-      key: 'physicianId',
+      title: 'Request by',
+      dataIndex: 'userID',
+      key: 'userID',
+    },
+    {
+      title: 'Amount',
+      render:r=>(<span>{r} Birr</span>),
+      dataIndex: 'amount',
+      key: 'amount',
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Paid'?"green":'red'}>{r}</Tag>),
       fixed: 'right',
       width:'100px',
     },
@@ -135,24 +141,37 @@ const PrescriptionTable = () => {
      key: 'operation',
      render: (r) => <Space>
       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
-       onClick={()=>{setOpenDrawer(true);setDrawerData(r)}}><FaEye/></Button>
+       onClick={()=>UpdatePayment('Paid',r._id)}><FaCheck/></Button>
        <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
-       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaPen/></Button>
+       onClick={()=>UpdatePayment('Fail',r._id)}><FaDeleteLeft/></Button>
        </Space>
     },
   ];
 
-  const [appointmentData,setAppointmentData]=useState([])
+  const [paymentReqList,setPaymentReqList]=useState([])
   const [loading,setLoading]=useState(false)
   const {openNotification} = useContext (AlertContext);
 
-  const getAppointmentList=async()=>{
+  const getPaymentRequestList=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get (`/api/prescription/get`);
+      const res = await axios.get (`/api/payment/requests`);
       setLoading (false);
       console.log(res.data.results)
-      setAppointmentData(res.data.results)
+      setPaymentReqList(res.data.results)
+    } catch (error) {
+      setLoading (false);
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
+  }
+
+  const UpdatePayment=async(e,id)=>{
+    setLoading(true)
+    try {
+      const res = await axios.post(`/api/payment/update`,{id:id,status:e});
+      setLoading (false);
+      openNotification('sucess', res.data.message, 3, 'green');
+      getPaymentRequestList()
     } catch (error) {
       setLoading (false);
       openNotification('error', error.response.data.message, 3, 'red');
@@ -161,13 +180,13 @@ const PrescriptionTable = () => {
 
   const [fectchData,setFetchData]=useState()
   useEffect(()=>{
-    getAppointmentList()
+    getPaymentRequestList()
   },[fectchData])
 
   return (
     <div>
       <DrawerOpen open={openDrawer} setOpen={setOpenDrawer} content={drawerData} fun={setFetchData}/>
-      <Button loading={loading} onClick={getAppointmentList} disabled={loading} style={{marginBottom:'10px'}}>Reload</Button>
+      <Button loading={loading} onClick={getPaymentRequestList} disabled={loading} style={{marginBottom:'10px'}}>Reload</Button>
       <Table
       columns={columns}
       size='small'
@@ -176,9 +195,9 @@ const PrescriptionTable = () => {
         defaultPageSize: 7,
         showSizeChanger: false 
       }}
-      dataSource={appointmentData}
+      dataSource={paymentReqList}
     />
     </div>
   );
 };
-export default PrescriptionTable;
+export default PaymentRequestTable;

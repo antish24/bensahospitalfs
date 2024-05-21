@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Patient from './Patient';
 
 const {Schema} = mongoose;
 
@@ -13,14 +14,14 @@ const PrescriptionSchema = new Schema ({
     ref: 'User',
     required: true,
   },
-//   medications: {type: String, required: true},
+  status: {type: String, default:'Pending'},
+  paymentTid: {type: String, default:'not paid'},
   medications: [{
     name: {type: String, required: true},
     dosage: {type: String, required: true},
-    instruction: {type: String, required: true},
-    strength: {type: String, required: true},
     quantity: {type: String, required: true},
   }],
+  instruction: {type: String, required: true},
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: null},
 });

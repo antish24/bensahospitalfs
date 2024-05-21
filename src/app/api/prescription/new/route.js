@@ -4,11 +4,10 @@ import Prescription from '@/backend/model/Prescription';
 import User from '@/backend/model/User';
 
 export const POST = async request => {
-  const {patientId, physicianId, medications} = await request.json ();
+  const {patientId, physicianId, medications,instruction} = await request.json ();
 
   try {
     await connect ();
-    console.log(patientId)
     let userId = await User.findOne ({IdNo: physicianId});
     if (!userId)
       return new NextResponse (JSON.stringify ({message: 'User Not Found'}), {
@@ -18,8 +17,6 @@ export const POST = async request => {
     const items = medications.map ((item, index) => ({
       name: item.name,
       dosage: item.dosage,
-      instruction: item.instruction,
-      strength: item.strength,
       quantity: item.quantity,
     }));
 
@@ -27,6 +24,7 @@ export const POST = async request => {
       patientId,
       physicianId: userId._id,
       medications:items,
+      instruction:instruction,
     });
     await newPrescription.save ();
 
@@ -36,7 +34,7 @@ export const POST = async request => {
     );
   } catch (err) {
     console.log (err);
-    return new NextResponse (JSON.stringify ({message: 'Database Error'}), {
+    return new NextResponse (JSON.stringify ({message: 'Medicine Detail Missing'}), {
       status: 500,
     });
   }
