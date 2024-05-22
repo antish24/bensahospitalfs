@@ -64,7 +64,7 @@ const NewPrescriptionForm = ({id}) => {
       onFinishFailed={onFinishFailed}
     >
       {medications.map ((medication, index) => (
-          <div style={{display:'grid',gridTemplateColumns:'200px 150px 100px',gap:'5px',borderBottom:'1px solid gray',padding:"5px 0"}}>
+          <div key={index} style={{display:'grid',gridTemplateColumns:'200px 150px 100px',gap:'5px',borderBottom:'1px solid gray',padding:"5px 0"}}>
           <Form.Item style={{margin:'0'}} label='Name' rules={[{required:true,message:'Durg Name Required'}]}>
           <Input
             placeholder="Name"
