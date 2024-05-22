@@ -2,25 +2,32 @@ import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import Diagnostic from '@/backend/model/Diagnostic';
 import Patient from '@/backend/model/Patient';
+import User from '@/backend/model/User';
 
-export const GET = async (request) => {
+export const GET = async (request,{params}) => {
+  const {id}=params
+
   try {
     await connect ();
+    const user=await User.findOne({IdNo:id})
+    if(!user){
+      return new NextResponse (
+        JSON.stringify ({message:'Physican Not Found'}),
+        {status: 404}
+      );
+    }
 
-    const diagnostic = await Diagnostic.find().populate('patientId', 'fullName IdNo').populate('physicianId', 'IdNo').sort({_id:-1});
+    const diagnostic = await Diagnostic.find({physicianId:user._id}).populate('patientId', 'fullName IdNo').sort({_id:-1});
 
     const diagnostics= diagnostic.map(doc => {
       return {
-        _id: doc._id,
         fullName: doc.patientId.fullName,
-        id: doc.patientId.IdNo,
-        IdNo: doc.physicianId.IdNo,
+        IdNo: doc.patientId.IdNo,
         priority: doc.priority,
         instructions: doc.instructions,
         reason: doc.reason,
         test: doc.test,
         bodyType: doc.bodyType,
-        status: doc.status,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt
       }

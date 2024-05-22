@@ -6,7 +6,7 @@ import { FaCashRegister } from "react-icons/fa6";
 const CashierLayout = ({children}) => {
     const Links = [
         {key: 1, href: "/cashier", icon: <LuLayoutDashboard />, label: "Dashboard" },
-        {key: 1, href: "/cashier/requests", icon: <FaCashRegister />, label: "Requests" },
+        {key: 2, href: "/cashier/requests", icon: <FaCashRegister />, label: "Requests" },
       ];
 
   return (

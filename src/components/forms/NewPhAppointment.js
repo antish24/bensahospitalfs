@@ -6,10 +6,11 @@ import {useRouter} from 'next/navigation';
 import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 
-const NewPhAppointmentForm = ({id}) => {
+const NewPhAppointmentForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
+  const [form] = Form.useForm();
 
   const onFinish = async values => {
     setLoading (true);
@@ -26,8 +27,11 @@ const NewPhAppointmentForm = ({id}) => {
         description: values.description,
       });
       setLoading (false);
-      openNotification ('error', res.data.message, 3, 'green');
+      openModalFun(false);
+      form.resetFields();
+      openNotification ('success', res.data.message, 3, 'green');
     } catch (error) {
+      console.log(error)
       openNotification ('error', error.response.data.message, 3, 'red');
       setLoading (false);
     }
@@ -42,6 +46,7 @@ const NewPhAppointmentForm = ({id}) => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="on"
+      form={form}
       autoFocus="true"
     >
 

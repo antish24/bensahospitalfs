@@ -5,7 +5,7 @@ import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
 
-const NewDiagnosticResultForm = ({id}) => {
+const NewDiagnosticResultForm = ({id,requestId}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
@@ -15,6 +15,7 @@ const NewDiagnosticResultForm = ({id}) => {
     try {
       const res = await axios.post (`/api/diagnostic/results/write`, {
         patientId: id,
+        requestId: requestId,
         diagnosticId: localStorage.getItem ('BHPFMS_IdNo'),
         test:values.test,
         findings:values.findings,
@@ -23,7 +24,7 @@ const NewDiagnosticResultForm = ({id}) => {
         notes:values.notes,
       });
       setLoading (false);
-      openNotification ('error', res.data.message, 3, 'green');
+      openNotification ('success', res.data.message, 3, 'green');
     } catch (error) {
       openNotification ('error', error.response.data.message, 3, 'red');
       setLoading (false);

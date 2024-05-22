@@ -63,7 +63,7 @@ const NewAppointmentForm = ({id}) => {
         description:values.description,
       })
       setLoading(false)
-      openNotification('error',res.data.message,3,'green');
+      openNotification('success',res.data.message,3,'green');
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');
       setLoading(false)

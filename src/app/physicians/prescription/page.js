@@ -1,9 +1,9 @@
-import PrescriptionTable from '@/components/tables/PrescriptionTable'
+import PhPrescriptionTable from '@/components/tables/PhPrescriptionTable'
 import React from 'react'
 
 const Prescription = () => {
   return (
-    <div><PrescriptionTable/></div>
+    <div><PhPrescriptionTable/></div>
   )
 }
 

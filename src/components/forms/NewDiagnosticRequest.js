@@ -7,7 +7,7 @@ import React, {useContext, useState} from 'react';
 import BodyType from '@/helper/BodyPart.json'
 import DiagnosticTest from '@/helper/DiagnosticTest.json'
 
-const NewDiagnosticForm = ({id}) => {
+const NewDiagnosticForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
@@ -30,7 +30,8 @@ const NewDiagnosticForm = ({id}) => {
         instructions:values.instructions,
       });
       setLoading (false);
-      openNotification ('error', res.data.message, 3, 'green');
+      openModalFun(false)
+      openNotification ('success', res.data.message, 3, 'green');
     } catch (error) {
       openNotification ('error', error.response.data.message, 3, 'red');
       setLoading (false);

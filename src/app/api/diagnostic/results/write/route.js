@@ -3,11 +3,12 @@ import connect from '@/backend/config/db';
 import User from '@/backend/model/User';
 import DiagnosticResult from '@/backend/model/DiagnosticResult';
 import Patient from '@/backend/model/Patient';
+import Diagnostic from '@/backend/model/Diagnostic';
 
 export const POST = async request => {
   const {
     patientId,
-    diagnosticId,
+    diagnosticId,requestId,
     test,
     notes,
     conclusions,
@@ -28,6 +29,11 @@ export const POST = async request => {
       return new NextResponse (JSON.stringify ({message: 'Patient Not Found'}), {
         status: 404,
       });
+
+    const diagnostic = await Diagnostic.findById(requestId);
+    diagnostic.status='Completed'
+    diagnostic.updatedAt = Date.now()
+    await diagnostic.save()
 
     const newDiagnosticResult = new DiagnosticResult ({
       patientId:patientIds._id,

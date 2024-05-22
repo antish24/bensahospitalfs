@@ -39,6 +39,7 @@ const NewUserForm = ({openModalFun}) => {
       setLoading (false);
       openModalFun(false)
       openNotification ('success', res.data.message, 3, 'green');
+      values()
     } catch (error) {
       setLoading (false);
       openNotification ('error', error.response.data.message, 3, 'red');

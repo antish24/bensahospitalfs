@@ -1,8 +1,9 @@
+import PhDiagonsticTable from '@/components/tables/PhDiagnosticTable'
 import React from 'react'
 
 const Diagnostic = () => {
   return (
-    <div>Physician Diagnostic</div>
+    <div><PhDiagonsticTable/></div>
   )
 }
 

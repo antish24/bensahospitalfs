@@ -77,11 +77,11 @@ const PatientDetailPhysician = () => {
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
     <div>
-        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<TreatmentForm id={id}/>)}}>Treatment</Button>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Treatment');setOpenModal (true);setModalContent(<TreatmentForm openModalFun={(e) => setOpenModal(e)} id={id}/>)}}>Treatment</Button>
         <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Bed Request');setOpenModal (true);setModalContent(<NewPhAppointmentForm/>)}}>Bed Request</Button>
-        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Diagnostic');setOpenModal (true);setModalContent(<NewDiagnosticForm id={PId}/>)}}>Diagnostic</Button>
-        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Prescription');setOpenModal (true);setModalContent(<NewPrescriptionForm id={PId}/>)}}>Prescription</Button>
-        <Button disabled={!PId} onClick={() => {setModalContentTitle('Appointment');setOpenModal (true);setModalContent(<NewPhAppointmentForm id={PId}/>)}}>Set Appointment</Button></div>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Diagnostic');setOpenModal (true);setModalContent(<NewDiagnosticForm openModalFun={(e) => setOpenModal (e)} id={PId}/>)}}>Diagnostic</Button>
+        <Button disabled={!PId} style={{marginRight:'10px'}} onClick={() =>{setModalContentTitle('Prescription');setOpenModal (true);setModalContent(<NewPrescriptionForm openModalFun={(e) => setOpenModal (e)} id={PId}/>)}}>Prescription</Button>
+        <Button disabled={!PId} onClick={() => {setModalContentTitle('Appointment');setOpenModal (true);setModalContent(<NewPhAppointmentForm id={PId} openModalFun={(e) => setOpenModal (e)}/>)}}>Set Appointment</Button></div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>
 {Object.keys(patientData).length > 0 ? (

@@ -8,7 +8,7 @@ import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
 
-const DiagonsticTable = () => {
+const PhDiagonsticTable = () => {
 
   const [searchedColumn, setSearchedColumn] = useState('');
   const navigate=useRouter()
@@ -92,9 +92,9 @@ const DiagonsticTable = () => {
     {
       title: 'ID No',
       fixed: 'left',
-      dataIndex: 'id',
+      dataIndex: 'IdNo',
       width:'100px',
-      ...getColumnSearchProps('id'),
+      ...getColumnSearchProps('IdNo'),
     },
         {
           title: 'Full Name',
@@ -109,11 +109,6 @@ const DiagonsticTable = () => {
           key: 'priority',
           render:r=>(<Tag color={r==="High"?'red':r==='Mid'?'orange':'green'}>{r}</Tag>)
 
-        },
-        {
-          title: 'Requested by',
-          dataIndex: 'IdNo',
-          key: 'IdNo',
         },
     {
       title: 'Test',
@@ -142,26 +137,17 @@ const DiagonsticTable = () => {
       render:r=>(<span>{FormatDateTime(r)}</span>)
     },
     {
-      title: 'Updated ',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render:r=>(<span>{r===null?'':FormatDateTime(r)}</span>)
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
-     fixed: 'right',
-     width:'100px',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      width:'100px',
     },
     {
      title: 'Action',
      width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button 
-     style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} 
-     onClick={()=>navigate.push(`diagnostic/${r.id}${r._id}`)}><FaEye/></Button>,
+     render: (r) => <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>,
     },
   ];
 
@@ -174,7 +160,7 @@ const DiagonsticTable = () => {
   const getDiagnosticData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get (`/api/diagnostic/get`);
+      const res = await axios.get (`/api/diagnostic/get/physician/${localStorage.getItem('BHPFMS_IdNo')}`);
       setLoading (false);
       console.log(res.data)
       setDiagnosticData(res.data.diagnostics)
@@ -196,7 +182,7 @@ const DiagonsticTable = () => {
       columns={columns}
       loading={loading}
       scroll={{
-        x: 1400,
+        x: 1000,
       }}
       pagination={{
         defaultPageSize: 7,
@@ -207,4 +193,4 @@ const DiagonsticTable = () => {
     </div>
   );
 };
-export default DiagonsticTable;
+export default PhDiagonsticTable;

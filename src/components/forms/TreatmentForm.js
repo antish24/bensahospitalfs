@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation';
 import React, {useContext, useEffect, useState} from 'react';
 import DepartmentList from '@/helper/Department.json';
 
-const TreatmentForm = ({id}) => {
+const TreatmentForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
@@ -28,6 +28,7 @@ const TreatmentForm = ({id}) => {
         emotional: values.emotional,
       });
       setLoading (false);
+      openModalFun(false)
       openNotification ('sucess', res.data.message, 3, 'green');
     } catch (error) {
       openNotification ('error', error.response.data.message, 3, 'red');

@@ -15,9 +15,10 @@ const RequestDetail = () => {
   const [PId, setPId] = useState ('');
   const [patientData, setPatientData] = useState ([]);
 
+  console.log(id.slice(8,))
   const getPatientData = async () => {
     try {
-      const res = await axios.get (`/api/patient/details/${id}`);
+      const res = await axios.get (`/api/patient/details/${id.slice(0,8)}`);
       setPatientData (res.data.patient);
       setPId (res.data.patient._id);
       console.log (res.data.patient);
@@ -61,15 +62,17 @@ const RequestDetail = () => {
           >
 
             <Button
+            disabled={!id}
               onClick={() => {
-                setModalContentTitle ('Appointment');
+                setModalContentTitle ('Result');
                 setOpenModal (true);
-                setModalContent (<NewDiagnosticResultForm id={id} />);
+                setModalContent (<NewDiagnosticResultForm id={id.slice(0,8)} requestId={id.slice(8,)} />);
               }}
             >
               Results
             </Button>
             <Button
+            disabled={!id}
               onClick={() => {
                 setModalContentTitle ('Appointment');
                 setOpenModal (true);

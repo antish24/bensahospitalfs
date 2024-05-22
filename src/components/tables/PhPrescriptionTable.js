@@ -2,18 +2,26 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {Button, Input, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { FaEye } from 'react-icons/fa6';
+import { FaEye, FaOpencart, FaPen } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
+import DrawerOpen from '../modal/Drawer';
+import ModalForm from '../modal/Modal';
+import PrescriptionInfo from '../description/PrescriptionInfo';
 
-const DiagonsticTable = () => {
+const PhPrescriptionTable = () => {
 
   const [searchedColumn, setSearchedColumn] = useState('');
   const navigate=useRouter()
   const [searchText, setSearchText] = useState('');
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [drawerData, setDrawerData] = useState([]);
   const searchInput = useRef(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalContent, setModalContent] = useState();
+  const [modalContentTitle, setModalContentTitle] = useState('');
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -92,9 +100,9 @@ const DiagonsticTable = () => {
     {
       title: 'ID No',
       fixed: 'left',
-      dataIndex: 'id',
+      dataIndex: 'IdNo',
       width:'100px',
-      ...getColumnSearchProps('id'),
+      ...getColumnSearchProps('IdNo'),
     },
         {
           title: 'Full Name',
@@ -103,108 +111,92 @@ const DiagonsticTable = () => {
           key: 'fullName',
           width:"300px"
         },
-        {
-          title: 'Priority',
-          dataIndex: 'priority',
-          key: 'priority',
-          render:r=>(<Tag color={r==="High"?'red':r==='Mid'?'orange':'green'}>{r}</Tag>)
-
-        },
-        {
-          title: 'Requested by',
-          dataIndex: 'IdNo',
-          key: 'IdNo',
-        },
     {
-      title: 'Test',
-      dataIndex: 'test',
-      key: 'test',
+      title: 'Status',
+      dataIndex: 'status',
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
+      fixed: 'right',
+      width:'100px',
     },
     {
-      title: 'Body Time',
-      dataIndex: 'bodyType',
-      key: 'bodyType',
-    },
-    {
-      title: 'Reason',
-      dataIndex: 'reason',
-      key: 'reason',
-    },
-    {
-      title: 'Instructions',
-      dataIndex: 'instructions',
-      key: 'instruction',
-    },
-    {
-      title: 'Date',
+      title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render:r=>(<span>{FormatDateTime(r)}</span>)
     },
     {
-      title: 'Updated ',
+      title: 'Updated At',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render:r=>(<span>{r===null?'':FormatDateTime(r)}</span>)
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
-     fixed: 'right',
-     width:'100px',
+      render:r=>(<span>{FormatDateTime(r)}</span>)
     },
     {
      title: 'Action',
-     width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button 
-     style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} 
-     onClick={()=>navigate.push(`diagnostic/${r.id}${r._id}`)}><FaEye/></Button>,
+     render: (r) => 
+      <Space>
+        <Button
+          style={{
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onClick={() =>{setModalContentTitle('Prescriptions Info');setOpenModal (true);setModalContent(<PrescriptionInfo data={r}/>)}}
+        >
+          <FaOpencart/>
+        </Button>
+       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>
+      </Space>
     },
   ];
 
- 
-
-  const [diagnosticData,setDiagnosticData]=useState([])
+  const [appointmentData,setAppointmentData]=useState([])
   const [loading,setLoading]=useState(false)
   const {openNotification} = useContext (AlertContext);
 
-  const getDiagnosticData=async()=>{
+  const getAppointmentList=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get (`/api/diagnostic/get`);
+      const res = await axios.get (`/api/prescription/get/physician/${localStorage.getItem('BHPFMS_IdNo')}`);
       setLoading (false);
-      console.log(res.data)
-      setDiagnosticData(res.data.diagnostics)
+      console.log(res.data.results)
+      setAppointmentData(res.data.results)
     } catch (error) {
-      openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);
+      openNotification('error', error.response.data.message, 3, 'red');
     }
   }
 
+  const [fectchData,setFetchData]=useState()
   useEffect(()=>{
-    getDiagnosticData()
-  },[])
+    getAppointmentList()
+  },[fectchData])
 
+  
   return (
     <div>
-      <Button style={{marginBottom:'5px'}} loading={loading} disabled={loading} onClick={getDiagnosticData}>Reload</Button>
+       <ModalForm
+      open={openModal}
+      close={() => setOpenModal (false)}
+      title={modalContentTitle}
+      content={modalContent}
+    />
+      <DrawerOpen open={openDrawer} setOpen={setOpenDrawer} content={drawerData} fun={setFetchData}/>
+      <Button loading={loading} onClick={getAppointmentList} disabled={loading} style={{marginBottom:'10px'}}>Reload</Button>
       <Table
-      size='small'
       columns={columns}
+      size='small'
       loading={loading}
-      scroll={{
-        x: 1400,
-      }}
       pagination={{
         defaultPageSize: 7,
         showSizeChanger: false 
       }}
-      dataSource={diagnosticData}
+      dataSource={appointmentData}
     />
     </div>
   );
 };
-export default DiagonsticTable;
+export default PhPrescriptionTable;

@@ -6,7 +6,7 @@ import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
 
-const NewPrescriptionForm = ({id}) => {
+const NewPrescriptionForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
@@ -45,7 +45,16 @@ const NewPrescriptionForm = ({id}) => {
         medications: medications,
         instruction: values.instruction,
       });
+      openModalFun(false)
       setLoading (false);
+      form.resetFields()
+      setMedications([
+        {
+          name: '',
+          dosage: '',
+          quantity: '',
+        },
+      ])
       openNotification ('sucess', res.data.message, 3, 'green');
     } catch (error) {
       openNotification ('error', error.response.data.message, 3, 'red');
