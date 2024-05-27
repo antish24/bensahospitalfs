@@ -8,11 +8,13 @@ const ScheduleSchema = new Schema ({
     ref: 'User',
     required: true,
   },
-  date: {type: String, required: true},
-  startTime: {type: Date, required: true},
-  endTime: {type: Date, required: true},
-  description: {type: String, required: true},
+  date: {type: Date, required: true,unique:true},
+  times: [{
+    time: {type: String, required: true},
+    status: {type: String, default: 'Open'},
+  }],
   createdAt: {type: Date, default: Date.now},
+  status: {type: String, default: 'Open'},
   updatedAt: {type: Date, default: null},
 });
 

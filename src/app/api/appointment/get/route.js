@@ -10,6 +10,7 @@ export const GET = async (request) => {
 
     const appointments= appointment.map(doc => {
       return {
+        _id: doc._id,
         fullName: doc.patientId.fullName,
         IdNo: doc.patientId.IdNo,
         physician: doc.physicianId.IdNo,
@@ -21,7 +22,8 @@ export const GET = async (request) => {
         description: doc.description,
         status: doc.status,
         createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt
+        updatedAt: doc.updatedAt,
+        updatedBy: doc.updatedBy
       }
     });
 

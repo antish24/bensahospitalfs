@@ -6,10 +6,11 @@ import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useState} from 'react';
 
-const NewVitalsForm = ({id}) => {
+const NewVitalsForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
+  const [form] = Form.useForm();
 
   const onFinish = async values => {
     setLoading (true);
@@ -23,9 +24,12 @@ const NewVitalsForm = ({id}) => {
       symptomSeverity:values.severity,
       vitalsSigns:values.vitalSign,
       });
-      setLoading (false);
+      setLoading (false)
+      openModalFun();
+      form.resetFields()
       openNotification ('success', res.data.message, 3, 'green');
     } catch (error) {
+      console.log(error)
       openNotification ('error', error.response.data.message, 3, 'red');
       setLoading (false);
     }
@@ -40,6 +44,7 @@ const NewVitalsForm = ({id}) => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="on"
+      form={form}
       autoFocus="true"
     >
       <Form.Item

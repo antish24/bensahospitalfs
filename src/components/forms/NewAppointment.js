@@ -1,17 +1,68 @@
 'use client'
 import { AlertContext } from '@/context/AlertContext'
-import { Button, DatePicker, Form, Input, Select, TimePicker } from 'antd'
+import { Button, DatePicker, Form, Input, Select } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useState } from 'react'
 import DepartmentList from '@/helper/Department.json'
 import axios from 'axios'
+import dayjs from 'dayjs'
 
-const NewAppointmentForm = ({id}) => {
+const NewAppointmentForm = ({id,openModalFun}) => {
   const {openNotification}=useContext(AlertContext)
-  const navigate=useRouter()
   const [loading,setLoading]=useState(false)
   const [nameloading,setnameLoading]=useState(false)
+
+  const [loadingDates, setLoadingDates] = useState (false);
+  const [loadingDatesTime, setLoadingDatesTime] = useState (false);
+  const [scheduleDataTime, setScheduleDataTime] = useState ([]);
+  const [scheduleData, setScheduleData] = useState ([]);
+
+  const getScheduleData = async (physicianIdNo) => {
+    setLoadingDates (true);
+    form.resetFields(['appointmentDate'])
+
+    try {
+      const res = await axios.get (`/api/schedule/get/${physicianIdNo}`);
+      setLoadingDates (false);
+      setScheduleData(
+        res.data.results.map(item => {
+          return dayjs(item.date).format('YYYY-MM-DD')  
+        })
+      )
+    } catch (error) {
+      console.log(error)
+      setLoadingDates (false);
+    }
+  };
+
+  const getDateFun = date => {
+    return dayjs(date).format('YYYY-MM-DD') 
+  }
+
+  const getScheduleDataTime = async (e) => {
+    form.resetFields(['startTime'])
+    setLoadingDatesTime (true);
+    try {
+      const date = dayjs(e).toISOString();
+      const res = await axios.post(`/api/schedule/times`,{date})
+      setLoadingDatesTime (false);
+      console.log(res.data.results)
+      setScheduleDataTime(res.data.results)
+    } catch (error) {
+      console.log(error)
+      setLoadingDatesTime (false);
+    }
+  };
+
+  const timesOption = scheduleDataTime?.map(day => {
+    return day.times
+      .filter(time => time.status === "Open")
+      .map(time => ({
+        value: time.time,
+        label: time.time + ' Am'
+      }))  
+  })
+  .flat();
 
   const departmentOption=DepartmentList.map(d => ({
     value: d.name, 
@@ -34,10 +85,13 @@ const NewAppointmentForm = ({id}) => {
 
   const getPhysiciansName =async () => {
     setnameLoading(true)
+    setphysicianNames([]);
+    form.resetFields(['physician'])
+    form.resetFields(['appointmentDate'])
+    form.resetFields(['startTime'])
     try {
       const res=await axios.get(`/api/physician/name/${depValue}`)
       setnameLoading(false)
-      console.log(res.data.names)
       setphysicianNames(res.data.names);
     } catch (error) {
       setnameLoading(false)
@@ -48,6 +102,7 @@ const NewAppointmentForm = ({id}) => {
   useEffect(()=>{
     getPhysiciansName()
   },[depValue])
+  const [form] = Form.useForm();
 
   const onFinish =async (values) => {
     setLoading(true)
@@ -63,6 +118,8 @@ const NewAppointmentForm = ({id}) => {
         description:values.description,
       })
       setLoading(false)
+      openModalFun()
+      form.resetFields()
       openNotification('success',res.data.message,3,'green');
     } catch (error) {
       openNotification('error',error.response.data.message,3,'red');
@@ -77,7 +134,8 @@ const NewAppointmentForm = ({id}) => {
     <Form layout="vertical"
     onFinish={onFinish}
     onFinishFailed={onFinishFailed}
-    autoComplete="on"
+      form={form}
+      autoComplete="on"
     autoFocus='true'>
       
 <Form.Item style={{margin:'5px'}}
@@ -114,10 +172,11 @@ const NewAppointmentForm = ({id}) => {
       name="physician"
       > 
       <Select
-      loading={nameloading}
+      disabled={nameloading}
     showSearch
     placeholder="Search to Select"
     optionFilterProp="children"
+    onChange={(value)=>getScheduleData(value)}
     filterOption={(input, option) => (option?.label ?? '').includes(input)}
     filterSort={(optionA, optionB) =>
       (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
@@ -164,7 +223,7 @@ const NewAppointmentForm = ({id}) => {
         ]}
         name="appointmentDate"    
       >
-        <DatePicker/>
+          <DatePicker disabledDate={date => !scheduleData.includes(getDateFun(date))} onChange={(date)=>getScheduleDataTime(date)} disabled={loadingDates} />
       </Form.Item>
       <Form.Item 
         label="Start Time"
@@ -176,7 +235,12 @@ const NewAppointmentForm = ({id}) => {
     }
   ]}
 >
-  <TimePicker /> 
+<Select
+            placeholder="Search to Select"
+            disabled={loadingDatesTime}
+            required={true}
+            options={timesOption}
+          />
 </Form.Item>
 
 <Form.Item

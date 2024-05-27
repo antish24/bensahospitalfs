@@ -27,6 +27,7 @@ export const GET = async (request,{params}) => {
         instructions: doc.instructions,
         reason: doc.reason,
         test: doc.test,
+        status: doc.status,
         bodyType: doc.bodyType,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt

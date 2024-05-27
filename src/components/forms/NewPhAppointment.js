@@ -1,10 +1,11 @@
 'use client';
 import {AlertContext} from '@/context/AlertContext';
-import {Button, Form, Input, Select, TimePicker} from 'antd';
+import {Button, DatePicker, Form, Input, Select, TimePicker} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import {useRouter} from 'next/navigation';
 import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const NewPhAppointmentForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
@@ -12,9 +13,60 @@ const NewPhAppointmentForm = ({id,openModalFun}) => {
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm();
 
+  const [loadingDates, setLoadingDates] = useState (false);
+  const [loadingDatesTime, setLoadingDatesTime] = useState (false);
+  const [scheduleDataTime, setScheduleDataTime] = useState ([]);
+  const [openDates, setOpenDates] = useState ([]);
+
+  const getScheduleData = async () => {
+    setLoadingDates (true);
+    try {
+      const res = await axios.get (`/api/schedule/get/${localStorage.getItem('BHPFMS_IdNo')}`);
+      setLoadingDates (false);
+      console.log(res.data.results)
+      setOpenDates(
+        res.data.results.map(item => {
+          return dayjs(item.date).format('YYYY-MM-DD')  
+        })
+      )
+    } catch (error) {
+      console.log(error)
+      setLoadingDates (false);
+    }
+  };
+
+  const getScheduleDataTime = async (e) => {
+    form.resetFields(['startTime'])
+    setLoadingDatesTime (true);
+    try {
+      const date = dayjs(e).toISOString();
+      const res = await axios.post(`/api/schedule/times`,{date})
+      setLoadingDatesTime (false);
+      console.log(res.data.results)
+      setScheduleDataTime(res.data.results)
+    } catch (error) {
+      console.log(error)
+      setLoadingDatesTime (false);
+    }
+  };
+
+  const timesOption = scheduleDataTime?.map(day => {
+    return day.times
+      .filter(time => time.status === "Open")
+      .map(time => ({
+        value: time.time,
+        label: time.time + ' Am'
+      }))  
+  })
+  .flat();
+
+  useEffect(()=>{
+    getScheduleData();
+  },[])
+
   const onFinish = async values => {
     setLoading (true);
-    console.log (id);
+    console.log(values)
     try {
       const res = await axios.post (`/api/appointment/new`, {
         patientId: id,
@@ -39,6 +91,10 @@ const NewPhAppointmentForm = ({id,openModalFun}) => {
   const onFinishFailed = errorInfo => {
     console.log ('Failed:', errorInfo);
   };
+
+  const getDateFun = date => {
+    return dayjs(date).format('YYYY-MM-DD') 
+  }
 
   return (
     <Form
@@ -93,7 +149,7 @@ const NewPhAppointmentForm = ({id,openModalFun}) => {
           ]}
           name="appointmentDate"
         >
-          <Input type="date" />
+          <DatePicker disabledDate={date => !openDates.includes(getDateFun(date))} onChange={(date)=>getScheduleDataTime(date)} disabled={loadingDates} />
         </Form.Item>
       </div>
 
@@ -109,7 +165,12 @@ const NewPhAppointmentForm = ({id,openModalFun}) => {
             },
           ]}
         >
-          <TimePicker style={{width:'100%'}}/>
+          <Select
+            placeholder="Search to Select"
+            disabled={loadingDatesTime}
+            required={true}
+            options={timesOption}
+          />
         </Form.Item>
 
         <Form.Item

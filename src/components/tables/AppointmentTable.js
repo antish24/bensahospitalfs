@@ -119,25 +119,25 @@ const AppointmentTable = () => {
     {
       title: 'Start Time',
       dataIndex: 'startTime',
-      render:r=>(<span>{formatTime(r)}</span>),
+      render:r=>(<span>{r} AM</span>),
       key: 'startTime',
     },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      key: 'duration',
-    },
+    // {
+    //   title: 'Duration',
+    //   dataIndex: 'duration',
+    //   key: 'duration',
+    // },
     {
       title: 'Priority',
       dataIndex: 'priority',
       render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
       width:'100px',
     },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-    },
+    // {
+    //   title: 'Description',
+    //   dataIndex: 'description',
+    //   key: 'description',
+    // },
     {
       title: 'By',
       dataIndex: 'appointmentBy',
@@ -146,7 +146,7 @@ const AppointmentTable = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
       width:'100px',
     },
     {

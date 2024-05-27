@@ -7,6 +7,11 @@ import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
+import { LuClipboardList } from "react-icons/lu";
+import ModalForm from '../modal/Modal';
+import DiagnosticReqInfo from '../description/DiagnosticReqInfo';
+import { GrDocumentTest } from "react-icons/gr";
+import NewDiagnosticResultForm from '../forms/NewDiagnosticResult';
 
 const DiagonsticTable = () => {
 
@@ -14,6 +19,10 @@ const DiagonsticTable = () => {
   const navigate=useRouter()
   const [searchText, setSearchText] = useState('');
   const searchInput = useRef(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalContent, setModalContent] = useState();
+  const [modalContentTitle, setModalContentTitle] = useState('');
+
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -110,42 +119,16 @@ const DiagonsticTable = () => {
           render:r=>(<Tag color={r==="High"?'red':r==='Mid'?'orange':'green'}>{r}</Tag>)
 
         },
-        {
-          title: 'Requested by',
-          dataIndex: 'IdNo',
-          key: 'IdNo',
-        },
     {
       title: 'Test',
       dataIndex: 'test',
       key: 'test',
     },
     {
-      title: 'Body Time',
-      dataIndex: 'bodyType',
-      key: 'bodyType',
-    },
-    {
-      title: 'Reason',
-      dataIndex: 'reason',
-      key: 'reason',
-    },
-    {
-      title: 'Instructions',
-      dataIndex: 'instructions',
-      key: 'instruction',
-    },
-    {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render:r=>(<span>{FormatDateTime(r)}</span>)
-    },
-    {
-      title: 'Updated ',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render:r=>(<span>{r===null?'':FormatDateTime(r)}</span>)
     },
     {
       title: 'Status',
@@ -156,12 +139,26 @@ const DiagonsticTable = () => {
     },
     {
      title: 'Action',
-     width:'80px',
      fixed: 'right',
      key: 'operation',
-     render: (r) => <Button 
+     render: (r) => <div 
+     style={{display:'flex',alignItems:'center',gap:'10px'}} 
+     ><Button 
      style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} 
-     onClick={()=>navigate.push(`diagnostic/${r.id}${r._id}`)}><FaEye/></Button>,
+     onClick={()=>navigate.push(`diagnostic/${r.id}${r._id}`)}><FaEye/></Button>
+     <Button 
+     style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} 
+      onClick={() =>{setModalContentTitle('Diagnostic Request');setOpenModal (true);setModalContent(<DiagnosticReqInfo data={r}/>)}}
+     ><LuClipboardList/></Button>
+     {r.status!=='Completed'&&
+      <Button 
+      style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} 
+      onClick={() =>{setModalContentTitle('Diagnostic Results');setOpenModal (true);setModalContent(<NewDiagnosticResultForm id={r.id} requestId={r._id}/>)}}
+      >
+       <GrDocumentTest/>
+      </Button>
+     }
+     </div>
     },
   ];
 
@@ -190,14 +187,17 @@ const DiagonsticTable = () => {
 
   return (
     <div>
+      <ModalForm
+      open={openModal}
+      close={() => setOpenModal (false)}
+      title={modalContentTitle}
+      content={modalContent}
+    />
       <Button style={{marginBottom:'5px'}} loading={loading} disabled={loading} onClick={getDiagnosticData}>Reload</Button>
       <Table
       size='small'
       columns={columns}
       loading={loading}
-      scroll={{
-        x: 1400,
-      }}
       pagination={{
         defaultPageSize: 7,
         showSizeChanger: false 

@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import Appointment from '@/backend/model/Appointment';
 import User from '@/backend/model/User';
+import Patient from '@/backend/model/Patient';
 
 export const GET = async (request, { params }) => {
   const {id}=params
@@ -14,6 +15,7 @@ export const GET = async (request, { params }) => {
 
     const appointments= appointment.map(doc => {
       return {
+        _id: doc._id,
         fullName: doc.patientId.fullName,
         IdNo: doc.patientId.IdNo,
         appointmentBy: doc.appointmentBy.IdNo,
@@ -24,7 +26,8 @@ export const GET = async (request, { params }) => {
         description: doc.description,
         status: doc.status,
         createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt
+        updatedAt: doc.updatedAt,
+        updatedBy: doc.updatedBy
       }
     });
 

@@ -139,7 +139,7 @@ const PhDiagonsticTable = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
       width:'100px',
     },
     {

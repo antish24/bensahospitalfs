@@ -15,12 +15,15 @@ export const GET = async (request, { params }) => {
 
     const patients= patient.map(doc => {
       return {
+        _id: doc._id,
         fullName: doc.patientId.fullName,
         sex: doc.patientId.sex, 
         IdNo: doc.patientId.IdNo,
         dateOfBirth: doc.patientId.dateOfBirth,
         priorty: doc.priorty,
         department: doc.department,
+        triage: doc.triage,
+        status: doc.status,
         physician: doc.physician,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt

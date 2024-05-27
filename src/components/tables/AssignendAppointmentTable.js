@@ -1,16 +1,26 @@
 'use client';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {Button, Input, Space, Table, Tag} from 'antd';
+import {Button, Input, Popconfirm, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { FaEye, FaPen } from 'react-icons/fa6';
+import { FaCalendarCheck, FaEye, FaListCheck, FaPen } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
 import { AlertContext } from '@/context/AlertContext';
 import { formatTime } from '@/helper/FormatTime';
 import { FormatDay } from '@/helper/FormateDay';
+import ModalForm from '../modal/Modal';
+import PhAppointmentInfo from '../description/PhAppointmentInfo';
 
 const AssignedAppointmentTable = () => {
+
+  const [openModal, setOpenModal] = useState(false);
+  const [modalContent, setModalContent] = useState();
+  const [modalContentTitle, setModalContentTitle] = useState('');
+
+  const [appointmentData,setAppointmentData]=useState([])
+  const [loading,setLoading]=useState(false)
+  const {openNotification} = useContext (AlertContext);
 
   const [searchedColumn, setSearchedColumn] = useState('');
   const navigate=useRouter()
@@ -90,6 +100,40 @@ const AssignedAppointmentTable = () => {
       ),
   });
 
+  
+  const getAppointmentList=async()=>{
+    setLoading(true)
+    try {
+      const res = await axios.get (`/api/appointment/get/${localStorage.getItem ('BHPFMS_IdNo')}`);
+      setLoading (false);
+      console.log(res.data.appointments)
+      setAppointmentData(res.data.appointments)
+    } catch (error) {
+      setLoading (false);
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
+  }
+
+  useEffect(()=>{
+    getAppointmentList()
+  },[])
+  
+  const [loadingCancel, setLoadingCancel] = useState (false);
+
+  const completeAppointment = async (id) => {
+    setLoadingCancel(true);
+    try {
+      const res = await axios.post (`/api/appointment/update`,{id:id,IdNo:localStorage.getItem ('BHPFMS_IdNo'),status:"Completed"});
+      setLoadingCancel(false);
+      getAppointmentList()
+      openNotification('success', res.data.message, 3, 'green');
+    } catch (error) {
+      console.log (error);
+      openNotification('error', error.response.data.message, 3, 'red');
+      setLoadingCancel(false);
+    }
+  };
+
   const columns = [
     {
       title: 'ID No',
@@ -115,13 +159,13 @@ const AssignedAppointmentTable = () => {
       title: 'Start Time',
       dataIndex: 'startTime',
       key: 'startTime',
-      render:r=>(<span>{formatTime(r)}</span>)
+      render:r=>(<span>{r} AM</span>)
     },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      key: 'duration',
-    },
+    // {
+    //   title: 'Duration',
+    //   dataIndex: 'duration',
+    //   key: 'duration',
+    // },
     {
       title: 'Priority',
       dataIndex: 'priority',
@@ -129,27 +173,11 @@ const AssignedAppointmentTable = () => {
       width:'100px',
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-    },
-    {
-      title: 'By',
-      dataIndex: 'appointmentBy',
-      key: 'appointmentBy',
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
       fixed: 'right',
       width:'100px',
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render:r=>(<span>{FormatDateTime(r)}</span>)
     },
     {
      title: 'Action',
@@ -158,42 +186,43 @@ const AssignedAppointmentTable = () => {
      render: (r) => <Space>
       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
        onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>
+       {r.status==='Pending'&&<Popconfirm
+          placement="topLeft"
+          title={'are you sure?'}
+          description={'complete appointment as completed'}
+          okText="Yes"
+          cancelText="No"
+          onConfirm={()=>completeAppointment(r._id)}
+        >
+       <Button 
+       disabled={loadingCancel}
+       loading={loadingCancel}
+        style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       ><FaCalendarCheck/></Button>
+       </Popconfirm>}
        <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
-       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaPen/></Button>
+        onClick={() =>{setModalContentTitle('Appointments Info');setOpenModal (true);setModalContent(<PhAppointmentInfo data={r}/>)}}
+       ><FaListCheck/></Button>
        </Space>,
     },
   ];
 
-  const [appointmentData,setAppointmentData]=useState([])
-  const [loading,setLoading]=useState(false)
-  const {openNotification} = useContext (AlertContext);
-
-  const getAppointmentList=async()=>{
-    setLoading(true)
-    try {
-      const res = await axios.get (`/api/appointment/get/${localStorage.getItem ('BHPFMS_IdNo')}`);
-      setLoading (false);
-      console.log(res.data.appointments)
-      setAppointmentData(res.data.appointments)
-    } catch (error) {
-      setLoading (false);
-      openNotification('error', error.response.data.message, 3, 'red');
-    }
-  }
-
-  useEffect(()=>{
-    getAppointmentList()
-  },[])
 
   return (
     <div>
+      <ModalForm
+      open={openModal}
+      close={() => setOpenModal (false)}
+      title={modalContentTitle}
+      content={modalContent}
+    />
       <Button loading={loading} onClick={getAppointmentList} disabled={loading} style={{marginBottom:'10px'}}>Reload</Button>
       <Table
       columns={columns}
       size='small'
       loading={loading}
       scroll={{
-        x: 1500,
+        x: 700,
       }}
       pagination={{
         defaultPageSize: 7,

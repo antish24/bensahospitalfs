@@ -2,7 +2,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {Button, Input, Space, Table, Tag} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { FaEye, FaOpencart, FaPen } from 'react-icons/fa6';
+import { FaEye } from 'react-icons/fa6';
+import {CiPillsBottle1  } from 'react-icons/ci';
 import { useRouter } from 'next/navigation'
 import { FormatDateTime } from '@/helper/FormatDate';
 import axios from 'axios';
@@ -145,7 +146,7 @@ const PhPrescriptionTable = () => {
           }}
           onClick={() =>{setModalContentTitle('Prescriptions Info');setOpenModal (true);setModalContent(<PrescriptionInfo data={r}/>)}}
         >
-          <FaOpencart/>
+          <CiPillsBottle1 />
         </Button>
        <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
        onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaEye/></Button>

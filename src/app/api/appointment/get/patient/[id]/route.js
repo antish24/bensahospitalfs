@@ -13,6 +13,7 @@ export const GET = async (request, { params }) => {
 
     const appointments= appointment.map(doc => {
       return {
+        _id: doc._id,
         physician: doc.physicianId.IdNo,
         appointmentBy: doc.appointmentBy.IdNo,
         priority: doc.priority,
@@ -22,7 +23,8 @@ export const GET = async (request, { params }) => {
         description: doc.description,
         status: doc.status,
         createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt
+        updatedAt: doc.updatedAt,
+        updatedBy: doc.updatedBy
       }
     });
 

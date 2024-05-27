@@ -136,8 +136,6 @@ const PrescriptionTable = () => {
      render: (r) => <Space>
       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
        onClick={()=>{setOpenDrawer(true);setDrawerData(r)}}><FaEye/></Button>
-       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
-       onClick={()=>navigate.replace(`patient/${r.IdNo}`)}><FaPen/></Button>
        </Space>
     },
   ];

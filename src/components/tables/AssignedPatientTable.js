@@ -114,13 +114,17 @@ const AssignedPatientTable = () => {
           key: 'sex',
           width:'100px'
         },
-        {
-          title: 'Date Of Birth',
-          dataIndex: 'dateOfBirth',
-          key: 'dateOfBirth',
-      render:r=>(<span>{FormatDateTime(r)}</span>)
-        },
       ],
+    },
+    {
+      title: 'Assigned By',
+      dataIndex: 'triage',
+      key: 'triage',
+    },
+    {
+      title: 'Assigned To',
+      dataIndex: 'physician',
+      key: 'physician',
     },
     {
       title: 'Priorty',
@@ -138,7 +142,7 @@ const AssignedPatientTable = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
       width:'100px',
     },
     {
@@ -156,7 +160,7 @@ const AssignedPatientTable = () => {
   const getAssignedPatientsData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get (`/api/patient/assigned/${localStorage.getItem ('BHPFMS_IdNo')}`);
+      const res = await axios.get (`/api/patient/assigned`);
       setLoading (false);
       console.log(res.data.patients)
       setPatientData(res.data.patients)
@@ -171,6 +175,8 @@ const AssignedPatientTable = () => {
   },[])
 
   return (
+    <>
+    <Button style={{marginBottom:'10px'}} loading={loading} onClick={getAssignedPatientsData}>Reload</Button>
     <Table
       size='small'
       columns={columns}
@@ -184,6 +190,7 @@ const AssignedPatientTable = () => {
       }}
       dataSource={patientData}
     />
+    </>
   );
 };
 export default AssignedPatientTable;

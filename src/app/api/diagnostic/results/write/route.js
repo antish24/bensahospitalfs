@@ -38,6 +38,7 @@ export const POST = async request => {
     const newDiagnosticResult = new DiagnosticResult ({
       patientId:patientIds._id,
       diagnosticId: userId._id,
+      diagnosticTest:diagnostic._id,
       test,
       notes,
       conclusions,

@@ -7,7 +7,7 @@ export const GET = async (request, { params }) => {
   try {
     await connect ();
 
-    const vitals = await Vitals.find({patientId:id});
+    const vitals = await Vitals.find({patientId:id}).sort({_id:-1});
     return new NextResponse (
       JSON.stringify ({vitals}),
       {status: 200}

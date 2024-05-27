@@ -1,16 +1,33 @@
 'use client';
 import { FormatDateTime } from '@/helper/FormatDate';
-import {Button, Descriptions, Table, Tag} from 'antd';
+import {Button, Descriptions, Popconfirm, Space, Table, Tag} from 'antd';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
-import { FaEye } from 'react-icons/fa6';
+import React, {useContext, useEffect, useState} from 'react';
+import { FaCalendarMinus, FaEye } from 'react-icons/fa6';
 import ModalForm from '../modal/Modal';
 import { FormatDay } from '@/helper/FormateDay';
 import AppointmentInfo from '../description/AppointmentInfo';
+import { AlertContext } from '@/context/AlertContext';
 
 const AppointmentTab = ({id}) => {
   const [patinetAppointments, setPatientAppointments] = useState ([]);
   const [loading, setLoading] = useState (false);
+  const [loadingCancel, setLoadingCancel] = useState (false);
+  const {openNotification} = useContext (AlertContext);
+
+  const canacelAppointment = async (id) => {
+    setLoadingCancel(true);
+    try {
+      const res = await axios.post (`/api/appointment/update`,{id:id,IdNo:localStorage.getItem ('BHPFMS_IdNo'),status:"Cancel"});
+      setLoadingCancel(false);
+      getPatientAppointments()
+      openNotification('success', res.data.message, 3, 'green');
+    } catch (error) {
+      console.log (error);
+      openNotification('error', error.response.data.message, 3, 'red');
+      setLoadingCancel(false);
+    }
+  };
 
   const getPatientAppointments = async () => {
     setLoading (true);
@@ -25,6 +42,7 @@ const AppointmentTab = ({id}) => {
       setLoading (false);
     }
   };
+
   useEffect (() => {
     getPatientAppointments ();
   }, []);
@@ -43,18 +61,18 @@ const AppointmentTab = ({id}) => {
     {
       title: 'Start Time',
       dataIndex: 'startTime',
+      render:r=>(<span>{r} Am</span>),
       key: 'startTime',
     },
     {
-      title: 'Priority',
-      dataIndex: 'priority',
-      render:r=>(<Tag color={r==='High'?'red':r==='Mid'?"yellow":'green'}>{r}</Tag>),
-      key: 'priority',
+      title: 'By',
+      dataIndex: 'appointmentBy',
+      key: 'appointmentBy',
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>Pending</Tag>),
+      render:r=>(<Tag color={r==='Pending'?'yellow':r==='Completed'?"green":'red'}>{r}</Tag>),
       fixed: 'right',
       width:'100px',
     },
@@ -66,10 +84,10 @@ const AppointmentTab = ({id}) => {
     },
     {
       title: 'Action',
-      width: '80px',
       fixed: 'right',
       key: 'operation',
       render: r => (
+        <Space>
         <Button
           style={{
             border: 'none',
@@ -81,6 +99,24 @@ const AppointmentTab = ({id}) => {
         >
           <FaEye/>
         </Button>
+        {
+          r.status==='Pending'&&
+          <Popconfirm
+          placement="topLeft"
+          title={'are you sure?'}
+          description={'Cancle the appointment'}
+          okText="Yes"
+          cancelText="No"
+          onConfirm={()=>canacelAppointment(r._id)}
+        >
+       <Button 
+       disabled={loadingCancel}
+       loading={loadingCancel}
+        style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
+       ><FaCalendarMinus color='red'/></Button>
+       </Popconfirm>
+        }
+      </Space>
       ),
     },
   ];

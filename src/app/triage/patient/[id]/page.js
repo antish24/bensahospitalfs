@@ -10,9 +10,9 @@ import VitalsTab from '@/components/tabs/VitalsTab';
 import AssignDocForm from '@/components/forms/AssignDocFrom';
 import { useParams } from 'next/navigation';
 import City from '@/helper/City.json'
-import LabResult from '@/components/tabs/LabResult';
 import AppointmentTab from '@/components/tabs/AppointmentTab';
 import PrescriptionTab from '@/components/tabs/PrescriptionTab';
+import { FormatDateTime } from '@/helper/FormatDate';
 
 const PatientDetail = () => {
  
@@ -121,12 +121,11 @@ const handleCityChange = (value) => {
     />
 
     <div style={{display:'flex',justifyContent:'space-between'}}>
-    <div>Registerd Date:23/03/2001   <Badge status='success' text="Active"/></div>
+    <div><Badge status={patientData.status==="Active"?'success':"error"} text={patientData.status+'  -'}/> <span style={{fontWeight:"bold"}}>Registerd : </span>{FormatDateTime(patientData.createdAt)}</div>
     <div style={{display:'flex',gap:'10px'}}>
-      <Button disabled={!PId} onClick={() =>{setModalContentTitle('Update Status');setOpenModal (true);setModalContent(<NewAppointmentForm id={PId}/>)}}>Update Status</Button>
-      <Button disabled={!PId} onClick={() =>{setModalContentTitle('Assign Physician');setOpenModal (true);setModalContent(<AssignDocForm id={PId}/>)}}>Assign</Button>
-      <Button onClick={() =>{setModalContentTitle('Wirte Vitals');setOpenModal (true);setModalContent(<NewVitalsForm id={id}/>)}}>Vitals</Button>
-      <Button disabled={!PId} onClick={() =>{setModalContentTitle('Set Appointment');setOpenModal (true);setModalContent(<NewAppointmentForm id={PId}/>)}}>Set Appointment</Button>
+      <Button disabled={!PId} onClick={() =>{setModalContentTitle('Assign Physician');setOpenModal (true);setModalContent(<AssignDocForm id={PId} openModalFun={()=>setOpenModal (false)}/>)}}>Assign</Button>
+      <Button onClick={() =>{setModalContentTitle('Wirte Vitals');setOpenModal (true);setModalContent(<NewVitalsForm id={id} openModalFun={()=>setOpenModal (false)}/>)}}>Vitals</Button>
+      <Button disabled={!PId} onClick={() =>{setModalContentTitle('Set Appointment');setOpenModal (true);setModalContent(<NewAppointmentForm id={PId} openModalFun={()=>setOpenModal (false)}/>)}}>Set Appointment</Button>
     </div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>

@@ -1,10 +1,11 @@
 'use client';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Button, Descriptions, Drawer, List, Tag} from 'antd';
 import NewPaymentRequestForm from '../forms/NewPaymentRequest';
 import ModalForm from './Modal';
 import axios from 'axios';
 import {AlertContext} from '@/context/AlertContext';
+
 const DrawerOpen = ({open, setOpen, content,fun}) => {
   const [openModal, setOpenModal] = useState (false);
   const [modalContent, setModalContent] = useState ();
@@ -92,6 +93,7 @@ const DrawerOpen = ({open, setOpen, content,fun}) => {
         title={modalContentTitle}
         content={modalContent}
       />
+      
       <List
         itemLayout="horizontal"
         dataSource={content.medications}

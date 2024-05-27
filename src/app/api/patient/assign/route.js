@@ -8,16 +8,26 @@ export const POST = async request => {
     priorty,
     department,
     physician,
+    triage
   } = await request.json ();
 
   try {
     await connect ();
+
+    const isAssigned= await AssignDoc.findOne({patientId:patientId,physician:physician,status:'Pending'})
+    if (isAssigned){
+    return new NextResponse (
+      JSON.stringify ({message: 'Patient is On waitlist'}),
+      {status: 403}
+    );
+  }
 
     const assignDoc = new AssignDoc ({
       patientId,
       priorty,
       department,
       physician,
+      triage
     });
     await assignDoc.save ();
 

@@ -3,7 +3,7 @@ import SideTopNav from '../../components/sidetopnav/sidetopnav';
 import React, { useState } from 'react';
 import {LuLayoutDashboard} from 'react-icons/lu';
 import {FaRegCalendarCheck} from 'react-icons/fa6';
-import {BsPersonRolodex} from 'react-icons/bs';
+import {BsPersonArmsUp, BsPersonRolodex} from 'react-icons/bs';
 import IsAuth from '@/helper/IsAuth';
 import { Button } from 'antd';
 
@@ -20,6 +20,12 @@ const TriageLayout = ({children}) => {
     },
     {
       key: 3,
+      href: '/triage/assigned',
+      icon: <BsPersonArmsUp />,
+      label: 'Assigned',
+    },
+    {
+      key: 4,
       href: '/triage/appointment',
       icon: <FaRegCalendarCheck />,
       label: 'Appointment',

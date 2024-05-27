@@ -126,6 +126,7 @@ function getRandomInt (max) {
 async function generateIdNo(role){
   // Get last id doc
   const lastDoc = await User.findOne({role: role}).sort({_id:-1})
+  if(!lastDoc&&role==="pharmacy") return "PM-001";
   if(!lastDoc) return role.toUpperCase().substring(0,2) +"-001";
   // Extract dept code and number 
   const deptCode = lastDoc.IdNo.split("-")[0];

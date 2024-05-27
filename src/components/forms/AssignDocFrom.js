@@ -6,10 +6,11 @@ import {useRouter} from 'next/navigation';
 import React, {useContext, useEffect, useState} from 'react';
 import DepartmentList from '@/helper/Department.json'
 
-const AssignDocForm = ({id}) => {
+const AssignDocForm = ({id,openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
+  const [form] = Form.useForm();
 
 
   const [nameloading,setnameLoading]=useState(false)
@@ -57,8 +58,11 @@ const AssignDocForm = ({id}) => {
         priorty:values.priorty,
         department:values.department,
         physician:values.physician,
+        triage:localStorage.getItem ('BHPFMS_IdNo')
       });
       setLoading (false);
+      form.resetFields()
+      openModalFun()
       openNotification ('success', res.data.message, 3, 'green');
     } catch (error) {
       openNotification ('error', error.response.data.message, 3, 'red');
@@ -74,6 +78,7 @@ const AssignDocForm = ({id}) => {
       layout="vertical"
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
+      form={form}
       autoComplete="on"
       autoFocus="true"
     >

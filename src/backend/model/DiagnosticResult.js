@@ -13,6 +13,11 @@ const DiagnosticResultSchema = new Schema ({
     ref: 'User',
     required: true,
   },
+  diagnosticTest: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Diagnostic',
+    required: true,
+  },
   test: {type: String, required: true},
   findings: {type: String, required: true},
   conclusions: {type: String, required: true},

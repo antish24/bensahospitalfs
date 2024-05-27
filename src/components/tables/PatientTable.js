@@ -159,7 +159,7 @@ const PatientTable = () => {
     {
       title: 'Status',
       key: 'status',
-      render: (r) => <Badge status="success" text={r.status} />,
+      render: (r) => <Badge status={r.status==='Active'?"success":'error'} text={r.status} />,
     },
     {
      title: 'Action',

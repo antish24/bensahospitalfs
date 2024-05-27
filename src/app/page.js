@@ -7,6 +7,8 @@ import Link from 'next/link'
 import axios from 'axios'
 import { AlertContext } from '@/context/AlertContext'
 import IsAuth from '@/helper/IsAuth'
+import Image from 'next/image'
+import loginpic from '../../public/imgs/login.svg'
 
 const Landing = () => {
   const {openNotification}=useContext(AlertContext)
@@ -33,7 +35,7 @@ const Landing = () => {
   return (
     <div className={styles.box}>
       <IsAuth path={'/'} setLoading={()=>console.log('loading')}/>
-      <div className={styles.loginform2}></div>
+      <Image className={styles.loginform2} src={loginpic}/>
       <div className={styles.loginform}>
       <Tooltip placement="top" title={'Bensa Hospital Patient File Management System'}>
       <h2 style={{marginBottom:'50px'}}>Welcome to BHPFMS</h2>
@@ -98,10 +100,6 @@ const Landing = () => {
     }
     options={[
       {
-        value: 'bedmanger',
-        label: 'Bed Manager',
-      },
-      {
         value: 'cashier',
         label: 'Cashier',
       },
@@ -122,12 +120,8 @@ const Landing = () => {
         label: 'Diagnostic Services',
       },
       {
-        value: 'systemadmin',
-        label: 'System Admin',
-      },
-      {
-        value: 'ceomanagement',
-        label: 'CEO Manager',
+        value: 'administrators',
+        label: 'Administrators',
       },
     ]}
   />

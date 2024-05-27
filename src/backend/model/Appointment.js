@@ -20,12 +20,13 @@ const AppointmentSchema = new Schema ({
     required: true,
   },
   priority: {type: String, required: true},
-  appointmentDate: {type: String, required: true},
-  startTime: {type: Date, required: true},
+  appointmentDate: {type: Date, required: true},
+  startTime: {type: String, required: true},
   duration: {type: Number, required: true},
   status: {type: String, required: true, default: 'Pending'},
   description: {type: String, required: true},
-
+  
+  updatedBy: {type: String,default:''},
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: null},
 });

@@ -10,6 +10,7 @@ const NewUserForm = ({openModalFun}) => {
   const {openNotification} = useContext (AlertContext);
   const navigate = useRouter ();
   const [loading, setLoading] = useState (false);
+  const [form] = Form.useForm();
 
   const [roleValue, setRoleValue] = useState();
 
@@ -39,7 +40,7 @@ const NewUserForm = ({openModalFun}) => {
       setLoading (false);
       openModalFun(false)
       openNotification ('success', res.data.message, 3, 'green');
-      values()
+      form.resetFields()
     } catch (error) {
       setLoading (false);
       openNotification ('error', error.response.data.message, 3, 'red');
@@ -53,6 +54,7 @@ const NewUserForm = ({openModalFun}) => {
     <Form
       layout="vertical"
       onFinish={onFinish}
+      form={form}
       onFinishFailed={onFinishFailed}
     >
       <Form.Item
@@ -119,10 +121,6 @@ const NewUserForm = ({openModalFun}) => {
             }
             options={[
               {
-                value: 'bedmanger',
-                label: 'Bed Manager',
-              },
-              {
                 value: 'cashier',
                 label: 'Cashier',
               },
@@ -143,12 +141,8 @@ const NewUserForm = ({openModalFun}) => {
                 label: 'Diagnostic Services',
               },
               {
-                value: 'systemadmin',
-                label: 'System Admin',
-              },
-              {
-                value: 'ceomanagement',
-                label: 'CEO Manager',
+                value: 'administrators',
+                label: 'Administrators',
               },
             ]}
           />

@@ -2,9 +2,9 @@
 import NewDiagnosticResultForm from '@/components/forms/NewDiagnosticResult';
 import ModalForm from '@/components/modal/Modal';
 import {useParams} from 'next/navigation';
-import {Badge, Button, Descriptions, Form, Input, Select, Tabs} from 'antd';
+import {Badge, Button, Form, Input, Tabs} from 'antd';
 import axios from 'axios';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import LabResult from '@/components/tabs/LabResult';
 
 const RequestDetail = () => {
@@ -70,16 +70,6 @@ const RequestDetail = () => {
               }}
             >
               Results
-            </Button>
-            <Button
-            disabled={!id}
-              onClick={() => {
-                setModalContentTitle ('Appointment');
-                setOpenModal (true);
-                setModalContent (<NewDiagnosticResultForm id={id} />);
-              }}
-            >
-              Status
             </Button>
           </div>
         </div>

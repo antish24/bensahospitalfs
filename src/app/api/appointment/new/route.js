@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import Appointment from '@/backend/model/Appointment';
 import User from '@/backend/model/User';
+import Schedule from '@/backend/model/Schedule';
 
 export const POST = async request => {
   const {
@@ -17,9 +18,26 @@ export const POST = async request => {
 
   try {
     await connect ();
-    console.log('patientId',patientId)
+
     let user=await User.findOne({IdNo:physician})
     let user2=await User.findOne({IdNo:appointmentBy})
+    
+    let hasAppointment=await Appointment.findOne({patientId:patientId,physicianId:user._id,status:"Pending"})
+    if (hasAppointment){
+      return new NextResponse (
+        JSON.stringify ({message: 'Patient have Pending Apppointment'}),
+        {status: 403}
+      );
+    }
+
+    let schedule=await Schedule.findOne({date:appointmentDate})
+    let timeObj = schedule.times.find(t => t.time === startTime);
+    timeObj.status = 'Taken'; 
+
+    const IsFull=schedule.times.every(time => time.status === 'Taken')
+    if(IsFull)schedule.status="Full"
+    await schedule.save();
+
 
     const newAppointment = new Appointment ({
       patientId,

@@ -19,6 +19,10 @@ export const POST = async (request) => {
       return new NextResponse(JSON.stringify({message:"Email Not Found"}),{status:403})
     }
 
+    if(user.status!=='Active'){
+      return new NextResponse(JSON.stringify({message:"Account Suspended Contact Admin"}),{status:403})
+    }
+
     const match = await bcrypt.compare (password, user.password);
 
     if( !match){

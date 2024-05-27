@@ -1,11 +1,14 @@
 'use client';
 import SideTopNav from '../../components/sidetopnav/sidetopnav';
-import React from 'react';
+import React, { useState } from 'react';
 import { LuLayoutDashboard } from "react-icons/lu";
 import { BsPrescription } from "react-icons/bs";
 import { GiMedicines } from "react-icons/gi";
+import IsAuth from '@/helper/IsAuth';
 
 const PharmacyLayout = ({children}) => {
+  const [loading,setLoading]=useState(false);
+
     const Links = [
         {key: 1, href: "/pharmacy", icon: <LuLayoutDashboard />, label: "Dashboard" },
         {key: 2, href: "/pharmacy/prescription", icon: <BsPrescription />, label: "Prescription" },
@@ -14,7 +17,9 @@ const PharmacyLayout = ({children}) => {
 
   return (
     <div>
-      <SideTopNav content={children} links={Links} footer={"Pharmacy Dashboard"}/>
+      <IsAuth path={'pharmacy'} setLoading={(e)=>setLoading(e)}/>
+      {loading?null:
+      <SideTopNav content={children} links={Links} footer={"Pharmacy Dashboard"}/>}
     </div>
   );
 };
