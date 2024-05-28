@@ -3,8 +3,8 @@ import DashboardCard from '@/components/card/DashboardCard';
 import LineChart from '@/components/charts/LineChart';
 import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FaCalendarCheck, FaList, FaUser} from 'react-icons/fa6';
-import {GiCaldera, GiCalendar, GiPerson, GiTestTubes} from "react-icons/gi";
+import { FaCalendarCheck, FaUser} from 'react-icons/fa6';
+import {GiCalendar, GiPerson, GiTestTubes} from "react-icons/gi";
 
 const Dashboard = () => {
   const [todayData,setTodayData]=useState([])

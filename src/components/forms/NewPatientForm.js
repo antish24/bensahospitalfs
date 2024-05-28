@@ -1,10 +1,11 @@
 'use client'
 import { AlertContext } from '@/context/AlertContext'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, DatePicker, Form, Input, Select } from 'antd'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useState } from 'react'
 import City from '@/helper/City.json'
+import dayjs from 'dayjs'
 
 const NewPatientForm = ({modalOpen}) => {
   const {openNotification}=useContext(AlertContext)
@@ -109,12 +110,12 @@ const handleCityChange = (value) => {
           {
             required: true,
             type:'date',
-            message: 'Please input Phone',
+            message: 'Please input Date',
           },
         ]}
         name="dateOfBirth"    
       >
-        <Input type='date'/>
+        <DatePicker disabledDate={current => current && current.isAfter(dayjs(), 'day')} style={{width:'100%'}}/>
       </Form.Item>
       </div>
 <div style={{display:'flex',justifyContent:'space-between'}}>
@@ -166,15 +167,27 @@ const handleCityChange = (value) => {
 
       <Form.Item style={{margin:'5px'}}
         label="Phone"
+        name="phone" 
         rules={[
           {
             required: true,
-            message: 'Please input Phone',
+            message: 'Please input phone number',
           },
-        ]}
-        name="phone"  
+          {
+            min: 10,
+            message: 'Phone number must be 10 digits', 
+          },
+          {
+            max: 10, 
+            message: 'Phone number must be 10 digits'
+          },
+          {
+            pattern: new RegExp('^\\d+$'),
+            message: 'Phone number must contain only digits'
+          }
+        ]} 
       >
-        <Input />
+        <Input type='number'/>
       </Form.Item>
 
       <Form.Item style={{margin:'5px'}}
@@ -210,12 +223,24 @@ const handleCityChange = (value) => {
         rules={[
           {
             required: true,
-            message: 'Please input phone',
+            message: 'Please input phone number',
           },
+          {
+            min: 10,
+            message: 'Phone number must be 10 digits', 
+          },
+          {
+            max: 10, 
+            message: 'Phone number must be 10 digits'
+          },
+          {
+            pattern: new RegExp('^\\d+$'),
+            message: 'Phone number must contain only digits'
+          }
         ]}
         name="emergencyContactPhone"
       >
-        <Input />
+        <Input type='number'/>
       </Form.Item>
       <Form.Item style={{margin:'5px',width:'48%'}}
         label="Relationship"

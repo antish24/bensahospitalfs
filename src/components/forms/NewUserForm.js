@@ -168,19 +168,31 @@ const NewUserForm = ({openModalFun}) => {
         }
 
       </div>
-      <Form.Item
-        style={{margin: '5px'}}
+      <Form.Item style={{margin:'5px'}}
         label="Phone"
+        name="phone" 
         rules={[
           {
             required: true,
-            message: 'Please input phone',
+            message: 'Please input phone number',
           },
-        ]}
-        name="phone"
+          {
+            min: 10,
+            message: 'Phone number must be 10 digits', 
+          },
+          {
+            max: 10, 
+            message: 'Phone number must be 10 digits'
+          },
+          {
+            pattern: new RegExp('^\\d+$'),
+            message: 'Phone number must contain only digits'
+          }
+        ]} 
       >
-        <Input />
+        <Input type='number'/>
       </Form.Item>
+
 
       <Form.Item
         style={{margin: '5px'}}

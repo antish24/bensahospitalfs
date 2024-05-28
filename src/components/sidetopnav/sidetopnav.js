@@ -191,7 +191,7 @@ const SideTopNav = ({content, links, footer}) => {
         func={() => setOpenValue (c => !c)}
       />
       <Sider
-        breakpoint='xxl'
+        breakpoint='md'
         collapsedWidth="0"
       >
         <div

@@ -167,10 +167,13 @@ export const POST = async request => {
   try {
     await connect ();
 
-    const patient = await Patient.findOne ({phone: phone});
+    const patient = await Patient.findOne ({$or: [
+      { phone },
+      { email } 
+    ]});
     if (patient) {
       return new NextResponse (
-        JSON.stringify ({message: 'Patient Phone Existed'}),
+        JSON.stringify ({message: 'Patient Phone or Email Existed'}),
         {status: 403}
       );
     }
