@@ -72,7 +72,6 @@ async function sendMail (email, code, subject, msg) {
     // Send the email
     const info = await transporter.sendMail (mailOptions);
   } catch (error) {
-    console.log (error);
   }
 }
 
@@ -148,7 +147,6 @@ export const POST = async request => {
       {status: 200}
     );
   } catch (err) {
-    console.log (err);
     return new NextResponse (JSON.stringify ({message: 'Database Error'}), {
       status: 500,
     });

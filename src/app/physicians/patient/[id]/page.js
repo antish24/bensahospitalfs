@@ -54,11 +54,6 @@ const PatientDetailPhysician = () => {
       label: 'Lab and test results',
       children: <LabResult id={PId}/>,
     },
-    {
-      key: '6',
-      label: 'Patient Log',
-      children: 'Content of Tab Pane 6',
-    },
   ];
 
   const [openModal, setOpenModal] = useState(false);

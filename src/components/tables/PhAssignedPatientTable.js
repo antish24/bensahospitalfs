@@ -184,6 +184,7 @@ const PhAssignedPatientTable = () => {
     try {
       const res=await axios.post('/api/patient/assigned/status',{id:e})
       setLoadingStat(false)
+      getAssignedPatientsData()
       openNotification('success',res.data.message,3,'green')
     } catch (error) {
       setLoadingStat(false)

@@ -14,7 +14,7 @@ const SystemAdminLayout = ({children}) => {
         {key: 1, href: "/administrators", icon: <LuLayoutDashboard />, label: "Dashboard" },
         {key: 2,href: "/administrators/users",icon: <FaUsers />,label: "Users",},
         {key: 3,href: "/administrators/patients",icon: <BsFillPersonVcardFill />,label: "Patients",},
-        {key: 4,href: "/administrators/log",icon: <MdOutlineSecurity />,label: "Log",},
+        // {key: 4,href: "/administrators/log",icon: <MdOutlineSecurity />,label: "Log",},
       ];
 
   return (

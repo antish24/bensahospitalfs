@@ -2,11 +2,10 @@
 import SideTopNav from '../../components/sidetopnav/sidetopnav';
 import React, { useState } from 'react';
 import { LuLayoutDashboard } from "react-icons/lu";
-import {PiNotepad } from "react-icons/pi";
 import {BsPersonRolodex} from "react-icons/bs";
 import {GiTestTubes} from "react-icons/gi";
 import IsAuth from '@/helper/IsAuth';
-import { RiCalendarCheckFill, RiCalendarScheduleFill } from "react-icons/ri"
+import { RiCalendarCheckFill, RiCalendarScheduleFill, RiMedicineBottleFill } from "react-icons/ri"
 
 const PhysiciansLayout = ({children}) => {
   const [loading,setLoading]=useState(false);
@@ -16,7 +15,7 @@ const PhysiciansLayout = ({children}) => {
         {key: 2,href: "/physicians/patient",icon: <BsPersonRolodex />,label: "Patient",},
         {key: 3, href: "/physicians/schedule", icon: <RiCalendarScheduleFill />, label: "Schedule" },
         {key: 4, href: "/physicians/appointment", icon: <RiCalendarCheckFill />, label: "Appointment" },
-        {key: 5, href: "/physicians/prescription", icon: <PiNotepad />, label: "Prescription" },
+        {key: 5, href: "/physicians/prescription", icon: <RiMedicineBottleFill />, label: "Prescription" },
         {key: 6, href: "/physicians/diagnostic", icon: <GiTestTubes />, label: "Diagnostic" },
       ];
 

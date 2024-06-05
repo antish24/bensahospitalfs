@@ -19,9 +19,7 @@ const PatientDetail = () => {
       const res=await axios.get(`/api/patient/details/${id}`)
       setPatientData(res.data.patient)
       setPId(res.data.patient._id)
-      console.log(res.data.patient)
     } catch (error) {
-      console.log(error)
     }
   }
 
@@ -67,7 +65,7 @@ const PatientDetail = () => {
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd {FormatDateTime(patientData.createdAt)}  <Badge status={patientData.status==='Active'?'success':"error"} text={patientData.status}/></div>
     <div style={{display:'flex',gap:'10px'}}>
-      {<Button disabled={loadingBan} loading={loadingBan} onClick={()=>BanUser()}>{patientData.status==="In Active"?"unBan":'Ban'}</Button>}
+      {<Button disabled={loadingBan} loading={loadingBan} danger={patientData.status==="Active"} onClick={()=>BanUser()}>{patientData.status==="In Active"?"unBan":'Ban'}</Button>}
     </div>
     </div>
 <div style={{display:"flex",justifyContent:'space-between'}}>

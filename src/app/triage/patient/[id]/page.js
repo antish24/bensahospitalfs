@@ -73,11 +73,6 @@ const handleCityChange = (value) => {
       label: 'Medications',
       children: <PrescriptionTab id={PId}/>,
     },
-    {
-      key: '6',
-      label: 'Patient Log',
-      children: 'Content of Tab Pane 6',
-    },
   ];
 
   const onFinish = async values => {

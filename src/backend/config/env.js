@@ -7,6 +7,7 @@ const config = {
   expiresIn: process.env.EXPIREDIN,
   PASSWORDP: process.env.EMAILPASSWORD,
   EMAILP: process.env.EMAILADDRESS,
+  IMGBACKEND: process.env.IMGBACKEND,
 };
 
 export default config;

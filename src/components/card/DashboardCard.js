@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DashboardCard = ({c,p,title,icon}) => {
+const DashboardCard = ({f,c,p,title,icon,ci,fi,pi}) => {
   return (
     <div
         style={{
@@ -10,7 +10,7 @@ const DashboardCard = ({c,p,title,icon}) => {
           borderRadius: '10px',
         }}
       >
-        <div style={{display:'flex',gap:'20px',alignItems:'center',height:'60%'}}>
+        <div style={{display:'flex',gap:'20px',alignItems:'center',height:'70%'}}>
           <div
             style={{
               display: 'flex',
@@ -22,11 +22,12 @@ const DashboardCard = ({c,p,title,icon}) => {
             {icon}
           </div>
           <div style={{display: 'flex', flexDirection: 'column',gap:'5px'}}>
-            <span>Pending : {p}</span>
-            <span>Completed : {c}</span>
+            <span>{ci} : {c}</span>
+            {pi&&<span>{pi} : {p?p:0}</span>}
+            {fi&&<span>{fi} : {f?f:0}</span>}
           </div>
         </div>
-        <div style={{display:"flex",alignItems:'center',height:'40%',fontWeight:'bold',paddingLeft:'10px',fontSize:'16px'}}>{title}</div>
+        <div style={{display:"flex",alignItems:'center',height:'30%',fontWeight:'bold',paddingLeft:'10px',fontSize:'16px'}}>{title} {c+(p?p:0)+(f?f:0)}</div>
       </div>
   )
 }

@@ -8,7 +8,7 @@ import axios from 'axios';
 import { IoReload } from "react-icons/io5";
 
 const Schedule = () => {
-  const [value, setValue] = useState(() => dayjs('2024-05-25'));
+  const [value, setValue] = useState(() => dayjs('2024-06-25'));
   const [openModal, setOpenModal] = useState(false);
   const [modalContent, setModalContent] = useState();
   const [modalContentTitle, setModalContentTitle] = useState('');

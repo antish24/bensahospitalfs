@@ -19,8 +19,8 @@ const IsAuth = ({path,setLoading}) => {
       setLoading (false);
       // openNotification ('succes', 'Auth Successfully', 3, 'green');
     } catch (error) {
-      openNotification ('error', error.response.data.message, 3, 'red');
-      navigate.replace('/')
+      // openNotification ('error', error.response.data.message, 3, 'red');
+      if(path!=='/patient')navigate.replace('/')
       setLoading (false);
     }
   };
@@ -28,7 +28,7 @@ const IsAuth = ({path,setLoading}) => {
 
   useEffect (
     () => {
-      if (localStorage.getItem ('BHPFMS_Role') !== path) navigate.replace(`/${localStorage.getItem ('BHPFMS_Role')!==''?localStorage.getItem ('BHPFMS_Role'):'/'}`);
+      if (localStorage.getItem ('BHPFMS_Role') !== path&& path!=='/patient') navigate.replace(`/${localStorage.getItem ('BHPFMS_Role')?localStorage.getItem ('BHPFMS_Role'):''}`);
       isAuth ();
     },
     [navigate,path]

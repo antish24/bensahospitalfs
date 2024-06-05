@@ -64,7 +64,7 @@ const NewMsgForm = ({openModalFun,id}) => {
 
   const getPhysiciansName =async () => {
     try {
-      const res=await axios.get(`/api/admin/usernames/${roleValue}/${depValue?depValue:"none"}`)
+      const res=await axios.get(`/api/admin/usernames/${roleValue}/${depValue&&depValue==='physicians'?depValue:"none"}`)
       console.log(res.data.names)
       setphysicianNames(res.data.names);
     } catch (error) {

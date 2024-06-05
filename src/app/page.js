@@ -8,12 +8,13 @@ import axios from 'axios'
 import { AlertContext } from '@/context/AlertContext'
 import IsAuth from '@/helper/IsAuth'
 import Image from 'next/image'
-import loginpic from '../../public/imgs/login.svg'
+import loginpic from '../../public/imgs/patientlog.svg'
 
 const Landing = () => {
   const {openNotification}=useContext(AlertContext)
   const navigate=useRouter()
   const [loading,setLoading]=useState(false)
+  const [loginPage,setLoginForm]=useState(true)
   const onFinish =async (values) => {
     setLoading(true)
     try {
@@ -29,29 +30,39 @@ const Landing = () => {
       setLoading(false)
     }
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+
+  const onResetPassword =async (values) => {
+    setLoading(true)
+    try {
+      const res=await axios.post(`/api/auth/forgot`,{email:values.email,role:values.role})
+      setLoginForm(true)
+      openNotification('succes','Password Reset Successfully',3,'green');
+      setLoading(false)
+    } catch (error) {
+      openNotification('error',error.response.data.message,3,'red');
+      setLoading(false)
+    }
   };
+  
   return (
-    <div className={styles.box}>
-      <IsAuth path={'/'} setLoading={()=>console.log('loading')}/>
+    <div className={styles.box} style={{flexDirection:!loginPage?"row-reverse":'row'}}>
+      <IsAuth path={'/'} setLoading={(e)=>setLoading(e)}/>
       <Image className={styles.loginform2} src={loginpic}/>
       <div className={styles.loginform}>
       <Tooltip placement="top" title={'Bensa Hospital Patient File Management System'}>
       <h2 style={{marginBottom:'50px'}}>Welcome to BHPFMS</h2>
-          </Tooltip>
-        <span style={{width:'70%',marginBottom:'10px'}}>login to your account</span>
-        <Form
+      </Tooltip>
+      <span style={{width:'70%',marginBottom:'10px'}}>{loginPage?"login to your account":'Reset your Password'}</span>
+      {loginPage?<Form
         layout="vertical"
-    name="login"
-    style={{
-      width: '70%',
-    }}
-    onFinish={onFinish}
-    onFinishFailed={onFinishFailed}
-    autoComplete="on"
-    autoFocus='true'
-  >
+        name="login"
+        style={{
+          width: '70%',
+        }}
+        onFinish={onFinish}
+        autoComplete="on"
+        autoFocus='true'
+        >
     <Form.Item
       label="Email"
       name="email"
@@ -126,7 +137,8 @@ const Landing = () => {
     ]}
   />
     </Form.Item>
-    <Link style={{display:'flex',flexDirection:'column',alignItems:'flex-end'}} href="/forgotpassword">Forgot Password?</Link>
+    <Button style={{padding:0,display:'flex',flexDirection:'column',alignItems:'flex-end'}} type='link' onClick={()=>setLoginForm(false)}>Forgot Password?</Button>
+    <Button type='link' style={{padding:0,display:'flex',flexDirection:'column',alignItems:'flex-end'}} onClick={()=>navigate.replace('/patient')}>Login as Patient</Button>
     <Form.Item
     style={{display:'flex',justifyContent:'center',margin:'5px 0'}}
     >
@@ -135,6 +147,87 @@ const Landing = () => {
       </Button>
     </Form.Item>
   </Form>
+  :
+  <Form
+        layout="vertical"
+        name="forget"
+        style={{
+          width: '70%',
+        }}
+        onFinish={onResetPassword}
+        autoComplete="on"
+        autoFocus='true'
+        >
+  <Form.Item 
+    label="Role"
+      style={{margin:'5px 0'}}
+      name="role"
+      rules={[
+        {
+          required: true,
+          message: 'Please selecte role',
+        },
+      ]}>
+    <Select
+    showSearch
+    placeholder="Search to Select"
+    optionFilterProp="children"
+    filterOption={(input, option) => (option?.label ?? '').includes(input)}
+    filterSort={(optionA, optionB) =>
+      (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+    }
+    options={[
+      {
+        value: 'cashier',
+        label: 'Cashier',
+      },
+      {
+        value: 'pharmacy',
+        label: 'Pharmacy',
+      },
+      {
+        value: 'physicians',
+        label: 'Physicians',
+      },
+      {
+        value: 'triage',
+        label: 'Triage',
+      },
+      {
+        value: 'diagnosticservices',
+        label: 'Diagnostic Services',
+      },
+      {
+        value: 'administrators',
+        label: 'Administrators',
+      },
+    ]}
+  />
+    </Form.Item>
+    <Form.Item
+      label="Email"
+      name="email"
+      style={{margin:'5px 0'}}
+      rules={[
+        {
+          required: true,
+          type:'email',
+          message: 'Please input your Email!',
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+    <Button type='link' style={{padding:0,display:'flex',flexDirection:'column',alignItems:'flex-end'}} onClick={()=>setLoginForm(true)}>Back to login</Button>
+
+    <Form.Item
+    style={{display:'flex',justifyContent:'center',margin:'5px 0'}}
+    >
+      <Button type="primary" htmlType="submit" disabled={loading} loading={loading}>
+        Submit
+      </Button>
+    </Form.Item>
+  </Form>}
       </div>
     </div>
   )

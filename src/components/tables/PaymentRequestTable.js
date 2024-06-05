@@ -140,10 +140,11 @@ const PaymentRequestTable = () => {
      fixed: 'right',
      key: 'operation',
      render: (r) => <Space>
+      {r.status==="Pending"?<Space>
       <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
-       onClick={()=>UpdatePayment('Paid',r._id)}><FaCheck/></Button>
+      onClick={()=>UpdatePayment('Paid',r._id)}><FaCheck/></Button>
        <Button style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}}
-       onClick={()=>UpdatePayment('Fail',r._id)}><FaDeleteLeft/></Button>
+       onClick={()=>UpdatePayment('Fail',r._id)}><FaDeleteLeft/></Button></Space>:<Tag color='green'>Finished</Tag>}
        </Space>
     },
   ];

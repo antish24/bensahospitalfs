@@ -153,7 +153,7 @@ const DiagonsticTable = () => {
      {r.status!=='Completed'&&
       <Button 
       style={{border:'none',display:'flex',alignItems:'center',justifyContent:'center'}} 
-      onClick={() =>{setModalContentTitle('Diagnostic Results');setOpenModal (true);setModalContent(<NewDiagnosticResultForm id={r.id} requestId={r._id}/>)}}
+      onClick={() =>{setModalContentTitle('Diagnostic Results');setOpenModal (true);setModalContent(<NewDiagnosticResultForm fecth={()=>getDiagnosticData()} openModalFun={(e)=>setOpenModal(e)} id={r.id} requestId={r._id}/>)}}
       >
        <GrDocumentTest/>
       </Button>

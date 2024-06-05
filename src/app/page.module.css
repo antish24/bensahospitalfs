@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row-reverse;
 }
 .loginform{
   width: 450px;
@@ -22,8 +23,8 @@
   height: 90vh;
   display: flex;
   flex-direction: column;
+  object-fit: cover;
   background: rgba(0, 140, 255, 0.112);
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
 }

@@ -18,7 +18,6 @@ const Users = () => {
     try {
       const res = await axios.get (`/api/admin/getusers`);
       setLoading (false);
-      console.log(res.data)
       setUserData(res.data.users)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');

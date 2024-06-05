@@ -57,9 +57,6 @@ const UsersDetail = () => {
       setLoading (false);
     }
   };
-  const onFinishFailed = errorInfo => {
-    console.log ('Failed:', errorInfo);
-  };
 
   const [userData,setuserData]=useState([])
   const getuserData=async()=>{
@@ -68,9 +65,7 @@ const UsersDetail = () => {
       setuserData(res.data.user)
       setPId(res.data.user._id)
       setRoleValue(res.data.user.role)
-      console.log(res.data.user)
     } catch (error) {
-      console.log(error)
     }
   }
 
@@ -125,8 +120,8 @@ const UsersDetail = () => {
     <div style={{display:'flex',justifyContent:'space-between'}}>
     <div>Registerd {FormatDateTime(userData.createdAt)}  <Badge status={userData.status==='Active'?'success':"error"} text={userData.status}/></div>
     <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-        <Button disabled={loadingDelete} loading={loadingDelete} onClick={()=>DeleteUser()}>{userData.status==="Deleted"?"Restore":"Delete"}</Button>
-        {userData.status!=="Deleted" &&<Button disabled={loadingBan} loading={loadingBan} onClick={()=>BanUser()}>{userData.status==="In Active"?"unBan":'Ban'}</Button>}
+        <Button type='primary' disabled={loadingDelete} danger={userData.status!=="Deleted"} loading={loadingDelete} onClick={()=>DeleteUser()}>{userData.status==="Deleted"?"Restore":"Delete"}</Button>
+        {userData.status!=="Deleted" &&<Button danger={userData.status==="Active"} disabled={loadingBan} loading={loadingBan} onClick={()=>BanUser()}>{userData.status==="In Active"?"unBan":'Ban'}</Button>}
         <Button style={{marginRight:'10px'}} disabled={loadingChPass} loading={loadingChPass} onClick={()=>ChangePassword()} >Change Password</Button>
     </div>
     </div>
@@ -137,7 +132,6 @@ const UsersDetail = () => {
       onFinish={onFinish}
       initialValues={userData}
       disabled={loading}
-      onFinishFailed={onFinishFailed}
       autoComplete="on"
       autoFocus="true"
       style={{width:'35%'}}

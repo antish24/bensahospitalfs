@@ -1,22 +1,10 @@
 'use client';
 import React, {useEffect, useState} from 'react';
-import {
-  Layout,
-  theme,
-  Dropdown,
-  Button,
-  Input,
-  Badge,
-  Breadcrumb,
-  Tabs,
-  Tooltip,
-} from 'antd';
+import {Layout,theme,Dropdown, Button,Badge,Breadcrumb,Tabs,Tooltip,} from 'antd';
 const {Header, Content, Footer, Sider} = Layout;
-import logo from '../../../public/imgs/logo.jpg';
 import { BiMessageDetail } from "react-icons/bi";
 import { AiOutlineFullscreenExit } from "react-icons/ai";
 import { SlSizeFullscreen } from "react-icons/sl";
-import Image from 'next/image';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {IoNotificationsCircle, IoSettingsOutline} from 'react-icons/io5';
@@ -24,14 +12,18 @@ import ModalForm from '../modal/Modal';
 import ProfileForm from '../forms/ProfileForm';
 import ChangePasswordForm from '../forms/ChangePasswordForm';
 import axios from 'axios';
-import {FaAngleRight} from 'react-icons/fa6';
+import {FaAngleRight, FaUser} from 'react-icons/fa6';
 import NewMsgForm from '../forms/NewMsgForm';
 import InboxMsg from '../tabs/InboxMsg';
 import SentMsg from '../tabs/SentMsg';
 import AlertTab from '../tabs/AlertTab';
+import useSound from 'use-sound'
+import InboxFeedBackAdmin from '../tabs/InboxFeedBackAdmin';
+import SentFeedBackAdmin from '../tabs/SentFeedBackAdmin';
 
 const SideTopNav = ({content, links, footer}) => {
   const {token: {colorBgContainer, borderRadiusLG}} = theme.useToken ();
+  const [play] = useSound('/sound/msg.mp3');
   const pathName = usePathname ();
   const [openValue, setOpenValue] = useState (false);
   const [openTitle, setTitle] = useState (false);
@@ -40,8 +32,10 @@ const SideTopNav = ({content, links, footer}) => {
 
   const [userName, setUserName] = useState ('');
   const [loading, setLoading] = useState (false);
+  const [loadingAlert, setLoadingAlert] = useState (false);
   const [loadingUnread, setLoadingUnread] = useState (false);
   const [unreadCount, setUnreadCount] = useState ();
+  const [alertValue, setAlertValue] = useState ();
   const [fetchData, setFetchData] = useState (false);
 
   const paths = pathName.split ('/').filter (path => path);
@@ -68,25 +62,51 @@ const SideTopNav = ({content, links, footer}) => {
       );
       setLoadingUnread (false);
       setUnreadCount (res.data.unreads);
+      // if(res.data.unreads > 0){
+      //   setTimeout(() => {
+      //     play(); 
+      //   }, 3000);
+      // }
     } catch (error) {
       setLoadingUnread (false);
       console.log (error);
     }
   };
 
+  const getAlert = async () => {
+    if(localStorage.getItem ('BHPFMS_IdNo')!=='physician')return
+    setLoadingAlert (true);
+    try {
+      const res = await axios.get (
+        `/api/appointment/reminder/physicain/${localStorage.getItem ('BHPFMS_IdNo')}`
+      );
+      setLoadingAlert (false);
+      console.log(res.data.message);
+      setAlertValue(res.data.message);
+    } catch (error) {
+      setLoadingAlert (false);
+      console.log (error);
+    }
+  };
+
   useEffect (() => {
     getuserData ();
+    getAlert()
     getUnreadMsg()
-  }, []);
+  }, [pathName]);
+
+  useEffect(()=>{
+    getAlert()
+  },[])
 
   const tabs = [
     {
-      key: '2',
+      key: '1',
       label: 'Alert',
-      children: <AlertTab/>,
+      children: <AlertTab data={alertValue} loading={loadingAlert}/>,
     },
     {
-      key: '1',
+      key: '2',
       label: 'Inbox',
       children: <InboxMsg  unReads={getUnreadMsg} fecth={fetchData}/>,
     },
@@ -95,6 +115,14 @@ const SideTopNav = ({content, links, footer}) => {
       label: 'Sent',
       children: <SentMsg fecth={fetchData}/>,
     },
+    {key: '4',
+      label: 'FeedBacks',
+      children: <InboxFeedBackAdmin  unReads={getUnreadMsg} fecth={fetchData}/>,
+    },
+    {key: '5',
+      label: 'Reply',
+      children: <SentFeedBackAdmin fecth={fetchData}/>,
+    }
   ];
 
   const items = [
@@ -146,7 +174,7 @@ const SideTopNav = ({content, links, footer}) => {
     {
       key: '4',
       label: (
-        <Tabs defaultActiveKey="1" items={tabs} style={{width: '350px',height:'450px'}} onChange={()=>setFetchData(c=>!c)}/>
+        <Tabs defaultActiveKey="1" items={paths.includes('administrators')?tabs:tabs.slice(0,3)} style={{width: '350px',height:'450px'}} onChange={()=>setFetchData(c=>!c)}/>
       ),
     },
   ];
@@ -205,13 +233,14 @@ const SideTopNav = ({content, links, footer}) => {
             gap: '10px',
           }}
         >
-          <Image
+          {/* <Image
             src={logo}
             width={50}
             style={{borderRadius: '50%'}}
             height={50}
             alt="user"
-          />
+          /> */}
+          <FaUser size={35} color='white'/>
           <span style={{color: 'white', fontWeight: 'bold'}}>
             {loading ? 'loading' : userName}
           </span>
@@ -292,6 +321,7 @@ const SideTopNav = ({content, links, footer}) => {
             >
               <Badge size="small" count={unreadCount}>
                 <IoNotificationsCircle size={26} cursor={'pointer'} />
+                {/* <IoNotificationsCircle size={26} onClick={()=>play()} cursor={'pointer'} /> */}
               </Badge>
             </Dropdown>
             <Dropdown
