@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import bcrypt from 'bcrypt';
 import Patient from '@/backend/model/Patient';
+import PatientLog from '@/backend/model/PatientLog';
 
 export const POST = async request => {
   const {IdNo, oldPassword, newPassword} = await request.json ();
@@ -26,6 +27,12 @@ export const POST = async request => {
     const hashPassword = await bcrypt.hash (newPassword, 10);
 
     (user.password = hashPassword), (user.updatedAt = Date.now ()), await user.save (); // Update the updatedAt field with the current timestamp
+    const newLog = new PatientLog ({
+      type: "Change Password",
+      user: user._id,
+    });
+    await newLog.save ();
+
     return new NextResponse (
       JSON.stringify ({message: 'Password Updated Succesfully'}),
       {status: 200}

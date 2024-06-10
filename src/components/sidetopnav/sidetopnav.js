@@ -1,12 +1,12 @@
 'use client';
-import React, {useEffect, useState} from 'react';
-import {Layout,theme,Dropdown, Button,Badge,Breadcrumb,Tabs,Tooltip,} from 'antd';
+import React, {useContext, useEffect, useState} from 'react';
+import {Layout,theme,Dropdown, Button,Badge,Breadcrumb,Tabs,Tooltip, Spin,} from 'antd';
 const {Header, Content, Footer, Sider} = Layout;
 import { BiMessageDetail } from "react-icons/bi";
 import { AiOutlineFullscreenExit } from "react-icons/ai";
 import { SlSizeFullscreen } from "react-icons/sl";
 import Link from 'next/link';
-import {usePathname} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import {IoNotificationsCircle, IoSettingsOutline} from 'react-icons/io5';
 import ModalForm from '../modal/Modal';
 import ProfileForm from '../forms/ProfileForm';
@@ -20,6 +20,7 @@ import AlertTab from '../tabs/AlertTab';
 import useSound from 'use-sound'
 import InboxFeedBackAdmin from '../tabs/InboxFeedBackAdmin';
 import SentFeedBackAdmin from '../tabs/SentFeedBackAdmin';
+import { AlertContext } from '@/context/AlertContext';
 
 const SideTopNav = ({content, links, footer}) => {
   const {token: {colorBgContainer, borderRadiusLG}} = theme.useToken ();
@@ -29,9 +30,11 @@ const SideTopNav = ({content, links, footer}) => {
   const [openTitle, setTitle] = useState (false);
   const [openContent, setOpenContent] = useState ();
   const [hoverLink, setHoverLink] = useState ();
-
+  const {openNotification}=useContext(AlertContext)
+  const navigate=useRouter()
   const [userName, setUserName] = useState ('');
   const [loading, setLoading] = useState (false);
+  const [logoutLoading, setLogoutLoading] = useState (false);
   const [loadingAlert, setLoadingAlert] = useState (false);
   const [loadingUnread, setLoadingUnread] = useState (false);
   const [unreadCount, setUnreadCount] = useState ();
@@ -125,19 +128,35 @@ const SideTopNav = ({content, links, footer}) => {
     }
   ];
 
+  const LogoutFunc = async () => {
+    setLogoutLoading (true);
+    try {
+      const res = await axios.get(`/api/auth/logout/${localStorage.getItem ('BHPFMS_IdNo')}`)
+      localStorage.setItem ('BHPFMS_Token', '');
+      localStorage.setItem ('BHPFMS_Role', '');
+      setLogoutLoading (false);
+      navigate.replace('/')
+      openNotification ('success', res.data.message, 3, 'green');
+    } catch (error) {
+      console.log(error)
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLogoutLoading (false);
+    }
+  };
+
   const items = [
     {
       key: '1',
       label: (
-        <pre
+        <span style={{width:'100%',display:'flex',alignItems:'center'}}
           onClick={() => {
             setOpenValue (true);
             setOpenContent (<ProfileForm />);
             setTitle ('Profile');
           }}
         >
-          Profile{' '}
-        </pre>
+          Profile
+        </span>
       ),
     },
     {
@@ -157,15 +176,11 @@ const SideTopNav = ({content, links, footer}) => {
     {
       key: '3',
       label: (
-        <Link
-          href={'/'}
-          onClick={() => {
-            localStorage.setItem ('BHPFMS_Token', '');
-            localStorage.setItem ('BHPFMS_Role', '');
-          }}
+        <span style={{width:'100%',display:'flex',alignItems:'center'}}
+          onClick={LogoutFunc}
         >
-          logout
-        </Link>
+          {logoutLoading?<Spin></Spin>:'Logout'}
+        </span>
       ),
     },
   ];

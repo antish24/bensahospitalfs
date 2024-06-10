@@ -6,6 +6,7 @@ import { AlertContext } from '@/context/AlertContext';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { FormatDateTime } from '@/helper/FormatDate';
+import PatientLogs from '@/components/tabs/PatientLogs';
 
 const PatientDetail = () => {
  
@@ -31,7 +32,7 @@ const PatientDetail = () => {
     {
       key: '1',
       label: 'Patient Log',
-      children: 'Content of Tab Pane 6',
+      children: <PatientLogs id={id}/>,
     },
   ];
   const [loadingBan,setLoadingBan] = useState(false);

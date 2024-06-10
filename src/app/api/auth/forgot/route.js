@@ -4,6 +4,7 @@ import User from '@/backend/model/User';
 import env from '@/backend/config/env';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
+import LoginLog from '@/backend/model/LoginLog';
 
 const PASSWORDP = env.PASSWORDP;
 const EMAILP = env.EMAILP;
@@ -148,6 +149,12 @@ export const POST = async request => {
       'Your Changed Dashboard Password',
       'Password : '
     );
+
+    const newLog = new LoginLog ({
+      type: "Forget password",
+      user: user._id,
+    });
+    await newLog.save ();
 
     return new NextResponse (
       JSON.stringify ({message: 'Reset Password Succesfully'}),

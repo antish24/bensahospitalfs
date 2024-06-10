@@ -4,6 +4,7 @@ import jwt  from "jsonwebtoken";
 import env from "@/backend/config/env";
 import bcrypt from 'bcrypt';
 import Patient from "@/backend/model/Patient";
+import PatientLog from "@/backend/model/PatientLog";
 
 const SECRETKEY=env.SECRETKEY
 const expiresIn=env.expiresIn
@@ -26,6 +27,11 @@ export const POST = async (request) => {
     const match = await bcrypt.compare (password, user.password);
 
     if( !match){
+      const newLog = new PatientLog ({
+        type: "Incorrect Password",
+        user: user._id,
+      });
+      await newLog.save ();
       return new NextResponse(JSON.stringify({message:"Invalid Password"}),{status:403})
     }
 
@@ -34,7 +40,11 @@ export const POST = async (request) => {
     const token=jwt.sign({ userId: user._id },SECRETKEY,{expiresIn:expiresIn})
     user.token=token
     await user.save();
-
+    const newLog = new PatientLog ({
+      type: "Login",
+      user: user._id,
+    });
+    await newLog.save ();
 
     return new NextResponse(JSON.stringify({token,IdNo}), { status: 200 });
   } catch (err) {

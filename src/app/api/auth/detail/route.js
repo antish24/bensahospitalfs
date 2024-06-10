@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import connect from '@/backend/config/db';
 import User from '@/backend/model/User';
+import LoginLog from '@/backend/model/LoginLog';
 
 export const POST = async request => {
   const {
@@ -11,7 +12,7 @@ export const POST = async request => {
   try {
     await connect ();
 
-    await User.findOneAndUpdate (
+    const user=await User.findOneAndUpdate (
       {IdNo: IdNo},
       {
         fullName,
@@ -19,6 +20,13 @@ export const POST = async request => {
         updatedAt: Date.now (), // Update the updatedAt field with the current timestamp
       }
     );
+
+    const newLog = new LoginLog ({
+      type: "Update Profile",
+      user: user._id,
+    });
+    await newLog.save ();
+    await user.save()
 
     return new NextResponse (
       JSON.stringify ({message: 'User Updated Succesfully'}),

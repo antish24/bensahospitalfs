@@ -5,6 +5,7 @@ import env from '@/backend/config/env';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import Patient from '@/backend/model/Patient';
+import PatientLog from '@/backend/model/PatientLog';
 
 const PASSWORDP = env.PASSWORDP;
 const EMAILP = env.EMAILP;
@@ -150,6 +151,11 @@ export const POST = async request => {
       'Password : '
     );
 
+    const newLog = new PatientLog ({
+      type: "Forget Password",
+      user: user._id,
+    });
+    await newLog.save ();
     return new NextResponse (
       JSON.stringify ({message: 'Reset Password Succesfully'}),
       {status: 200}

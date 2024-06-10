@@ -1,11 +1,12 @@
 'use client'
 import React, { useContext, useEffect, useState } from 'react';
-import {Badge, Button, Descriptions, Form, Input, Select, Tabs} from 'antd';
+import {Badge, Button, Form, Input, Select, Tabs} from 'antd';
 import { AlertContext } from '@/context/AlertContext';
 import axios from 'axios';
 import { useParams} from 'next/navigation';
 import { FormatDateTime } from '@/helper/FormatDate';
 import DepartmentList from '@/helper/Department.json'
+import Logs from '@/components/tabs/Logs';
 
 const UsersDetail = () => {
  
@@ -29,14 +30,9 @@ const UsersDetail = () => {
 
   const items = [
     {
-      key: '5',
-      label: 'Data',
-      children: 'Content of Tab Pane 5',
-    },
-    {
       key: '6',
       label: 'User Log',
-      children: 'Content of Tab Pane 6',
+      children: <Logs id={params.id}/>,
     },
   ];
 
